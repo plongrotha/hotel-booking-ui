@@ -1,0 +1,370 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Header Section -->
+  <section class="bg-white border-b border-gray-200 py-4 sm:py-6">
+    <div class="container mx-auto px-4 max-w-7xl">
+      <div
+        class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+      >
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-900 mb-1">
+            All Hotels
+          </h1>
+          <p class="text-xs sm:text-sm text-gray-600">
+            <span
+              *ngIf="!isLoading && hotels.length > 0"
+              class="font-semibold text-gray-900"
+              >{{ hotels.length }}</span
+            >
+            <span *ngIf="!isLoading && hotels.length > 0">
+              hotels available</span
+            >
+            <span *ngIf="isLoading">Loading hotels...</span>
+          </p>
+        </div>
+
+        <!-- Filter & Sort Controls -->
+        <div
+          class="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto"
+          *ngIf="!isLoading && allHotels.length > 0"
+        >
+          <select
+            [(ngModel)]="selectedLocation"
+            (change)="filterByLocation()"
+            class="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <option value="">All Locations</option>
+            <option *ngFor="let location of uniqueLocations" [value]="location">
+              {{ location }}
+            </option>
+          </select>
+          <button
+            *ngIf="selectedLocation"
+            (click)="clearFilter()"
+            class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white border border-blue-600 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"
+              ></path>
+            </svg>
+            Clear Filter
+          </button>
+          <select
+            class="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
+          >
+            <option>Sort by: Newest</option>
+            <option>Sort by: Name A-Z</option>
+            <option>Sort by: Name Z-A</option>
+            <option>Sort by: Location</option>
+          </select>
+        </div>
+        <option>Sort by: Location</option>
+      </div>
+    </div>
+
+    <div class="container mx-auto px-4 max-w-7xl py-8">
+      <!-- Loading State -->
+      <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+        <div class="text-center">
+          <svg
+            class="animate-spin h-12 w-12 text-blue-600 mx-auto mb-4"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          <p class="text-gray-600">Loading hotels...</p>
+        </div>
+      </div>
+
+      <!-- Error Message -->
+      <div *ngIf="errorMessage && !isLoading" class="max-w-2xl mx-auto">
+        <div
+          class="bg-red-50 border border-red-200 rounded-xl p-6 flex items-start gap-3"
+        >
+          <svg
+            class="w-6 h-6 text-red-500 shrink-0 mt-0.5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <div>
+            <h3 class="text-red-800 font-semibold mb-1">
+              Error Loading Hotels
+            </h3>
+            <p class="text-red-600 text-sm">{{ errorMessage }}</p>
+            <button
+              (click)="loadHotels()"
+              class="mt-3 text-sm text-red-600 font-semibold hover:text-red-700 underline"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hotels Grid -->
+      <div
+        *ngIf="!isLoading && hotels.length > 0"
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+      >
+        <div
+          *ngFor="let hotel of hotels"
+          class="bg-white rounded-xl overflow-hidden border border-gray-200 hover:shadow-xl hover:border-blue-300 transition-all duration-300 cursor-pointer group"
+        >
+          <!-- Hotel Image -->
+          <div class="relative overflow-hidden h-48">
+            <img
+              [src]="getImageUrl(hotel.hotelImage)"
+              [alt]="hotel.hotelName"
+              class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              (error)="
+                $any($event.target).src =
+                  'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400'
+              "
+            />
+            <!-- Hover Overlay -->
+            <div
+              class="absolute inset-0 bg-linear-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            ></div>
+
+            <!-- Hotel ID Badge -->
+            <div class="absolute top-3 right-3">
+              <span
+                class="bg-white/90 backdrop-blur-sm text-gray-700 text-xs font-semibold px-2 py-1 rounded-lg"
+              >
+                #{{ hotel.hotelId }}
+              </span>
+            </div>
+          </div>
+
+          <!-- Hotel Info -->
+          <div class="p-4">
+            <!-- Hotel Name -->
+            <h3
+              class="font-bold text-gray-900 text-base mb-2 truncate group-hover:text-blue-600 transition-colors"
+            >
+              {{ hotel.hotelName }}
+            </h3>
+
+            <!-- Location -->
+            <div class="flex items-center text-sm text-gray-600 mb-3">
+              <svg
+                class="w-4 h-4 mr-1 text-gray-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                ></path>
+              </svg>
+              <span class="truncate">{{ hotel.location }}</span>
+            </div>
+
+            <!-- Metadata -->
+            <div class="space-y-2 mb-4">
+              <div
+                class="flex items-center justify-between text-xs text-gray-500"
+              >
+                <span class="flex items-center gap-1">
+                  <svg
+                    class="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    ></path>
+                  </svg>
+                  Added: {{ hotel.createdAt | date : "MMM d, y" }}
+                </span>
+              </div>
+              <div
+                class="flex items-center justify-between text-xs text-gray-500"
+              >
+                <span class="flex items-center gap-1">
+                  <svg
+                    class="w-3 h-3"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                    ></path>
+                  </svg>
+                  Updated: {{ hotel.updatedAt | date : "MMM d, y" }}
+                </span>
+              </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="pt-3 border-t border-gray-100">
+              <button
+                (click)="viewHotelDetails(hotel.hotelId)"
+                class="w-full bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md flex items-center justify-center gap-2"
+              >
+                <svg
+                  class="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  ></path>
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  ></path>
+                </svg>
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div
+        *ngIf="!isLoading && hotels.length === 0 && !errorMessage"
+        class="text-center py-16"
+      >
+        <div class="max-w-md mx-auto">
+          <div
+            class="bg-gray-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4"
+          >
+            <svg
+              class="w-10 h-10 text-gray-400"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              ></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">
+            No Hotels Available
+          </h3>
+          <p class="text-gray-600 mb-6">
+            There are currently no hotels in the system. Check back later!
+          </p>
+          <button
+            (click)="loadHotels()"
+            class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
+          >
+            <svg
+              class="w-4 h-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+              ></path>
+            </svg>
+            Refresh
+          </button>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div
+        *ngIf="!isLoading && hotels.length > 0 && totalPages > 1"
+        class="mt-8 flex justify-center"
+      >
+        <div class="flex items-center gap-2">
+          <button
+            (click)="previousPage()"
+            [disabled]="page === 0"
+            [class.opacity-50]="page === 0"
+            [class.cursor-not-allowed]="page === 0"
+            class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:hover:bg-white transition-colors"
+          >
+            Previous
+          </button>
+
+          <div class="flex gap-2">
+            <button
+              *ngFor="let pageNum of [].constructor(totalPages); let i = index"
+              (click)="goToPage(i)"
+              [class.bg-blue-600]="page === i"
+              [class.text-white]="page === i"
+              [class.bg-white]="page !== i"
+              class="w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              {{ i + 1 }}
+            </button>
+          </div>
+
+          <button
+            (click)="nextPage()"
+            [disabled]="page >= totalPages - 1"
+            [class.opacity-50]="page >= totalPages - 1"
+            [class.cursor-not-allowed]="page >= totalPages - 1"
+            class="px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 disabled:hover:bg-white transition-colors"
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

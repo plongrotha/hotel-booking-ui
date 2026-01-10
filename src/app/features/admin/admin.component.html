@@ -1,0 +1,393 @@
+<div class="admin-container container-md">
+  <!-- Header -->
+  <header class="admin-header">
+    <h1>Admin Dashboard</h1>
+    <!-- <p class="subtitle">Manage your hotel booking platform</p> -->
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="admin-nav">
+    <button
+      class="nav-btn"
+      [class.active]="activeTab === 'dashboard'"
+      (click)="setActiveTab('dashboard')"
+    >
+      <span class="icon">📊</span>
+      Dashboard
+    </button>
+    <button
+      class="nav-btn"
+      [class.active]="activeTab === 'users'"
+      (click)="setActiveTab('users')"
+    >
+      <span class="icon">👥</span>
+      Users
+    </button>
+    <button
+      class="nav-btn"
+      [class.active]="activeTab === 'hotels'"
+      (click)="setActiveTab('hotels')"
+    >
+      <span class="icon">🏨</span>
+      Hotels
+    </button>
+    <button
+      class="nav-btn"
+      [class.active]="activeTab === 'bookings'"
+      (click)="setActiveTab('bookings')"
+    >
+      <span class="icon">📅</span>
+      Bookings
+    </button>
+  </nav>
+
+  <!-- Error Message -->
+  <div class="error-message" *ngIf="error">
+    {{ error }}
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="loading" *ngIf="loading">
+    <div class="spinner"></div>
+    <p>Loading...</p>
+  </div>
+
+  <!-- Dashboard Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'dashboard' && !loading">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-info">
+          <h3>{{ stats.totalUsers }}</h3>
+          <p>Total Users</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">🏨</div>
+        <div class="stat-info">
+          <h3>{{ stats.totalHotels }}</h3>
+          <p>Total Hotels</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-info">
+          <h3>{{ stats.totalBookings }}</h3>
+          <p>Total Bookings</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-info">
+          <h3>${{ stats.totalRevenue | number : "1.2-2" }}</h3>
+          <p>Total Revenue</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Users Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'users' && !loading">
+    <div class="content-header">
+      <h2>User Management</h2>
+      <div class="header-actions">
+        <div class="search-box">
+          <input
+            type="text"
+            placeholder="Search users..."
+            [(ngModel)]="userSearchTerm"
+            (input)="searchUsers()"
+          />
+        </div>
+        <button class="btn-add" (click)="openCreateUserDialog()">
+          <span class="icon">➕</span>
+          Add New User
+        </button>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Age</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of filteredUsers">
+            <td>{{ user.id }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.firstName }} {{ user.lastName }}</td>
+            <td>
+              <span class="badge badge-role">{{ user.role }}</span>
+            </td>
+            <td>{{ user.age }}</td>
+            <td>
+              <span
+                class="badge"
+                [class.badge-active]="user.enabled"
+                [class.badge-inactive]="!user.enabled"
+              >
+                {{ user.enabled ? "Active" : "Inactive" }}
+              </span>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-toggle" (click)="toggleUserStatus(user)">
+                  {{ user.enabled ? "Disable" : "Enable" }}
+                </button>
+                <button class="btn-delete" (click)="deleteUser(user.id)">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredUsers.length === 0">
+            <td colspan="7" class="no-data">No users found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Hotels Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'hotels' && !loading">
+    <div class="content-header">
+      <h2>Hotel Management</h2>
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search hotels..."
+          [(ngModel)]="hotelSearchTerm"
+          (input)="searchHotels()"
+        />
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Hotel Name</th>
+            <th>Location</th>
+            <th>Owner ID</th>
+            <th>Created</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let hotel of filteredHotels">
+            <td>{{ hotel.hotelId }}</td>
+            <td>{{ hotel.hotelName }}</td>
+            <td>{{ hotel.location }}</td>
+            <td>{{ hotel.ownerId }}</td>
+            <td>{{ hotel.createdAt | date : "short" }}</td>
+            <td>
+              <div class="action-buttons">
+                <button class="btn-delete" (click)="deleteHotel(hotel.hotelId)">
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredHotels.length === 0">
+            <td colspan="6" class="no-data">No hotels found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bookings Tab -->
+  <div class="tab-content" *ngIf="activeTab === 'bookings' && !loading">
+    <div class="content-header">
+      <h2>Booking Management</h2>
+      <div class="search-box">
+        <input
+          type="text"
+          placeholder="Search bookings..."
+          [(ngModel)]="bookingSearchTerm"
+          (input)="searchBookings()"
+        />
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Hotel</th>
+            <th>User</th>
+            <th>Check In</th>
+            <th>Check Out</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of filteredBookings">
+            <td>{{ booking.bookingId }}</td>
+            <td>{{ booking.hotelName || "N/A" }}</td>
+            <td>{{ booking.userName || "User #" + booking.userId }}</td>
+            <td>{{ booking.checkInDate | date : "short" }}</td>
+            <td>{{ booking.checkOutDate | date : "short" }}</td>
+            <td>${{ booking.totalPrice | number : "1.2-2" }}</td>
+            <td>
+              <select
+                class="status-select"
+                [value]="booking.status"
+                [ngClass]="getStatusClass(booking.status)"
+                (change)="
+                  updateBookingStatus(
+                    booking.bookingId,
+                    $any($event.target).value
+                  )
+                "
+              >
+                <option value="PENDING">Pending</option>
+                <option value="CONFIRMED">Confirmed</option>
+                <option value="CANCELLED">Cancelled</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+            </td>
+            <td>
+              <div class="action-buttons">
+                <button
+                  class="btn-delete"
+                  (click)="deleteBooking(booking.bookingId)"
+                >
+                  Delete
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="filteredBookings.length === 0">
+            <td colspan="8" class="no-data">No bookings found</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Create User Dialog Modal -->
+  <div
+    *ngIf="isCreateUserDialogOpen"
+    class="modal-overlay"
+    (click)="closeCreateUserDialog()"
+  >
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- Dialog Header -->
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="icon">👤</span>
+          <div>
+            <h2>Create New User</h2>
+            <p>Add a new user and assign a role</p>
+          </div>
+        </div>
+        <button class="btn-close" (click)="closeCreateUserDialog()">✕</button>
+      </div>
+
+      <!-- Dialog Body -->
+      <form (ngSubmit)="registerNewUser()" class="modal-body">
+        <!-- Success Message -->
+        <div *ngIf="createUserSuccess" class="alert alert-success">
+          <span class="icon">✓</span>
+          <div>
+            <h4>Success!</h4>
+            <p>User has been created successfully.</p>
+          </div>
+        </div>
+
+        <!-- Error Message -->
+        <div *ngIf="createUserError" class="alert alert-error">
+          <span class="icon">⚠</span>
+          <div>
+            <h4>Error</h4>
+            <p>{{ createUserError }}</p>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <!-- Username -->
+          <div class="form-group">
+            <label for="username"
+              >Username <span class="required">*</span></label
+            >
+            <input
+              id="username"
+              type="text"
+              [(ngModel)]="newUserData.username"
+              name="username"
+              placeholder="Enter username"
+              class="form-input"
+              required
+            />
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="password"
+              >Password <span class="required">*</span></label
+            >
+            <input
+              id="password"
+              type="password"
+              [(ngModel)]="newUserData.password"
+              name="password"
+              placeholder="Enter password (min 6 characters)"
+              class="form-input"
+              minlength="6"
+              required
+            />
+          </div>
+
+          <!-- Role -->
+          <div class="form-group form-group-full">
+            <label for="role">Role <span class="required">*</span></label>
+            <select
+              id="role"
+              [(ngModel)]="newUserData.role"
+              name="role"
+              class="form-input"
+              required
+            >
+              <option>Choose Role</option>
+              <option value="ROLE_CLIENT">Client</option>
+              <option value="ROLE_OWNER">Hotel Owner</option>
+            </select>
+            <p class="form-hint">
+              Client: Regular user who can book hotels<br />
+              Hotel Owner: Can manage their hotels
+            </p>
+          </div>
+        </div>
+
+        <!-- Dialog Footer -->
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn-cancel"
+            (click)="closeCreateUserDialog()"
+            [disabled]="isCreatingUser"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn-submit" [disabled]="isCreatingUser">
+            <span *ngIf="isCreatingUser" class="spinner-small"></span>
+            <span>{{ isCreatingUser ? "Creating..." : "Create User" }}</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
