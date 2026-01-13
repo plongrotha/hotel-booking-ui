@@ -5,10 +5,11 @@ import { AdminService, Booking, DashboardStats } from './service/admin.service';
 import { UserResponse } from '../../core/model/user.model';
 import { Hotel } from '../../core/model/hotel.model';
 import { SignupRequest } from '../../core/model/auth.model';
+import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, StatCardComponent],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })

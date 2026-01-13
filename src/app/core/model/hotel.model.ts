@@ -3,6 +3,7 @@ export interface Hotel {
   hotelName: string;
   location: string;
   hotelImage: string;
+  googleMapUrl?: string;
   ownerId: number;
   createdAt: string;
   updatedAt: string;
@@ -31,4 +32,9 @@ export interface RoomRequest {
   price: number;
   roomType: RoomType;
   hotelId: number;
+}
+
+export interface RoomUpdateRequest {
+  price: number;
+  roomType: RoomType;
 }

@@ -8,35 +8,39 @@
   <!-- Navigation Tabs -->
   <nav class="admin-nav">
     <button
+      id="dashboard-tab-btn"
       class="nav-btn"
       [class.active]="activeTab === 'dashboard'"
       (click)="setActiveTab('dashboard')"
     >
-      <span class="icon">📊</span>
+      <span class="icon"><img src="chart.png" alt="Dashboard" /></span>
       Dashboard
     </button>
     <button
+      id="users-tab-btn"
       class="nav-btn"
       [class.active]="activeTab === 'users'"
       (click)="setActiveTab('users')"
     >
-      <span class="icon">👥</span>
+      <span class="icon"><img src="people.png" alt="Users" /></span>
       Users
     </button>
     <button
+      id="hotels-tab-btn"
       class="nav-btn"
       [class.active]="activeTab === 'hotels'"
       (click)="setActiveTab('hotels')"
     >
-      <span class="icon">🏨</span>
+      <span class="icon"><img src="skyscraper.png" alt="hotels" /></span>
       Hotels
     </button>
     <button
+      id="bookings-tab-btn"
       class="nav-btn"
       [class.active]="activeTab === 'bookings'"
       (click)="setActiveTab('bookings')"
     >
-      <span class="icon">📅</span>
+      <span class="icon"><img src="to-do-list.png" alt="booking" /></span>
       Bookings
     </button>
   </nav>
@@ -55,34 +59,31 @@
   <!-- Dashboard Tab -->
   <div class="tab-content" *ngIf="activeTab === 'dashboard' && !loading">
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-info">
-          <h3>{{ stats.totalUsers }}</h3>
-          <p>Total Users</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">🏨</div>
-        <div class="stat-info">
-          <h3>{{ stats.totalHotels }}</h3>
-          <p>Total Hotels</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">📅</div>
-        <div class="stat-info">
-          <h3>{{ stats.totalBookings }}</h3>
-          <p>Total Bookings</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">💰</div>
-        <div class="stat-info">
-          <h3>${{ stats.totalRevenue | number : "1.2-2" }}</h3>
-          <p>Total Revenue</p>
-        </div>
-      </div>
+      <app-stat-card
+        icon="👥"
+        [value]="stats.totalUsers"
+        label="Total Users"
+      ></app-stat-card>
+
+      <app-stat-card
+        icon="🏨"
+        [value]="stats.totalHotels"
+        label="Total Hotels"
+      ></app-stat-card>
+
+      <app-stat-card
+        icon="📋"
+        [value]="stats.totalBookings"
+        label="Total Bookings"
+      ></app-stat-card>
+
+      <app-stat-card
+        icon="💰"
+        [value]="stats.totalRevenue"
+        label="Total Revenue"
+        prefix="$"
+        [formatAsNumber]="true"
+      ></app-stat-card>
     </div>
   </div>
 
@@ -93,21 +94,26 @@
       <div class="header-actions">
         <div class="search-box">
           <input
+            id="user-search-input"
             type="text"
             placeholder="Search users..."
             [(ngModel)]="userSearchTerm"
             (input)="searchUsers()"
           />
         </div>
-        <button class="btn-add" (click)="openCreateUserDialog()">
-          <span class="icon">➕</span>
+        <button
+          id="add-user-btn"
+          class="btn-add"
+          (click)="openCreateUserDialog()"
+        >
+          <span class="icon">+</span>
           Add New User
         </button>
       </div>
     </div>
 
     <div class="table-container">
-      <table class="data-table">
+      <table id="users-table" class="data-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -139,10 +145,16 @@
             </td>
             <td>
               <div class="action-buttons">
-                <button class="btn-toggle" (click)="toggleUserStatus(user)">
+                <button
+                  class="btn-toggle toggle-user-btn"
+                  (click)="toggleUserStatus(user)"
+                >
                   {{ user.enabled ? "Disable" : "Enable" }}
                 </button>
-                <button class="btn-delete" (click)="deleteUser(user.id)">
+                <button
+                  class="btn-delete delete-user-btn"
+                  (click)="deleteUser(user.id)"
+                >
                   Delete
                 </button>
               </div>
@@ -162,6 +174,7 @@
       <h2>Hotel Management</h2>
       <div class="search-box">
         <input
+          id="hotel-search-input"
           type="text"
           placeholder="Search hotels..."
           [(ngModel)]="hotelSearchTerm"
@@ -171,7 +184,7 @@
     </div>
 
     <div class="table-container">
-      <table class="data-table">
+      <table id="hotels-table" class="data-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -191,7 +204,10 @@
             <td>{{ hotel.createdAt | date : "short" }}</td>
             <td>
               <div class="action-buttons">
-                <button class="btn-delete" (click)="deleteHotel(hotel.hotelId)">
+                <button
+                  class="btn-delete delete-hotel-btn"
+                  (click)="deleteHotel(hotel.hotelId)"
+                >
                   Delete
                 </button>
               </div>
@@ -211,6 +227,7 @@
       <h2>Booking Management</h2>
       <div class="search-box">
         <input
+          id="booking-search-input"
           type="text"
           placeholder="Search bookings..."
           [(ngModel)]="bookingSearchTerm"
@@ -220,7 +237,7 @@
     </div>
 
     <div class="table-container">
-      <table class="data-table">
+      <table id="bookings-table" class="data-table">
         <thead>
           <tr>
             <th>ID</th>
@@ -243,7 +260,7 @@
             <td>${{ booking.totalPrice | number : "1.2-2" }}</td>
             <td>
               <select
-                class="status-select"
+                class="status-select booking-status-select"
                 [value]="booking.status"
                 [ngClass]="getStatusClass(booking.status)"
                 (change)="
@@ -262,7 +279,7 @@
             <td>
               <div class="action-buttons">
                 <button
-                  class="btn-delete"
+                  class="btn-delete delete-booking-btn"
                   (click)="deleteBooking(booking.bookingId)"
                 >
                   Delete
@@ -280,6 +297,7 @@
 
   <!-- Create User Dialog Modal -->
   <div
+    id="create-user-modal"
     *ngIf="isCreateUserDialogOpen"
     class="modal-overlay"
     (click)="closeCreateUserDialog()"
@@ -294,11 +312,21 @@
             <p>Add a new user and assign a role</p>
           </div>
         </div>
-        <button class="btn-close" (click)="closeCreateUserDialog()">✕</button>
+        <button
+          id="close-modal-btn"
+          class="btn-close"
+          (click)="closeCreateUserDialog()"
+        >
+          &times;
+        </button>
       </div>
 
       <!-- Dialog Body -->
-      <form (ngSubmit)="registerNewUser()" class="modal-body">
+      <form
+        id="create-user-form"
+        (ngSubmit)="registerNewUser()"
+        class="modal-body"
+      >
         <!-- Success Message -->
         <div *ngIf="createUserSuccess" class="alert alert-success">
           <span class="icon">✓</span>
@@ -375,6 +403,7 @@
         <!-- Dialog Footer -->
         <div class="modal-footer">
           <button
+            id="cancel-create-user-btn"
             type="button"
             class="btn-cancel"
             (click)="closeCreateUserDialog()"
@@ -382,7 +411,12 @@
           >
             Cancel
           </button>
-          <button type="submit" class="btn-submit" [disabled]="isCreatingUser">
+          <button
+            id="submit-create-user-btn"
+            type="submit"
+            class="btn-submit"
+            [disabled]="isCreatingUser"
+          >
             <span *ngIf="isCreatingUser" class="spinner-small"></span>
             <span>{{ isCreatingUser ? "Creating..." : "Create User" }}</span>
           </button>

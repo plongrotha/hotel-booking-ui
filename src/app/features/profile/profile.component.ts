@@ -5,10 +5,19 @@ import { Router } from '@angular/router';
 import { ProfileService } from './service/profile.service';
 import { UserResponse, UserUpdate } from '../../core/model/user.model';
 import { SignInService } from '../sign-in/service/sign-in.service';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import { AlertComponent } from '../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    LoadingSpinnerComponent,
+    ButtonComponent,
+    AlertComponent,
+  ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
 })

@@ -1,0 +1,14 @@
+<div class="stat-card">
+  <div class="stat-icon">{{ icon }}</div>
+  <div class="stat-info">
+    <h3>
+      {{ prefix }}
+      <ng-container *ngIf="formatAsNumber; else plainValue">
+        {{ value | number : numberFormat }}
+      </ng-container>
+      <ng-template #plainValue>{{ value }}</ng-template>
+      {{ suffix }}
+    </h3>
+    <p>{{ label }}</p>
+  </div>
+</div>

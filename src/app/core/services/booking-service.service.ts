@@ -21,6 +21,7 @@ export interface BookingRequestByUsername {
 export interface BookingResponse {
   bookingId: number;
   userId: number;
+  clientName: string;
   hotelId: number;
   roomId: number;
   totalPrice: number;

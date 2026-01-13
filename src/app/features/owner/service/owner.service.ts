@@ -1,19 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Hotel, Room, RoomRequest } from '../../../core/model/hotel.model';
+import {
+  Hotel,
+  Room,
+  RoomRequest,
+  RoomUpdateRequest,
+} from '../../../core/model/hotel.model';
 
 export interface Booking {
   bookingId: number;
   userId: number;
+  clientName: string;
   hotelId: number;
-  hotelName?: string;
-  userName?: string;
+  roomId: number;
+  totalPrice: number;
+  bookingAt: string;
+  updatedAt: string;
   checkInDate: string;
   checkOutDate: string;
-  totalPrice: number;
-  status: string;
-  createdAt: string;
+  hotelName?: string;
+  userName?: string;
+  createdAt?: string;
 }
 
 export interface OwnerStats {
@@ -27,6 +35,7 @@ export interface CreateHotelRequest {
   hotelName: string;
   location: string;
   hotelImage?: string;
+  googleMapUrl?: string;
 }
 
 @Injectable({
@@ -62,6 +71,13 @@ export class OwnerService {
     hotelData: Partial<CreateHotelRequest>
   ): Observable<Hotel> {
     return this.http.put<Hotel>(`${this.apiUrl}/${hotelId}`, hotelData);
+  }
+
+  updateRoom(
+    roomId: number,
+    roomData: Partial<RoomUpdateRequest>
+  ): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/rooms/${roomId}`, roomData);
   }
 
   deleteHotel(hotelId: number): Observable<void> {

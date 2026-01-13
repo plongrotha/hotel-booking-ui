@@ -1,0 +1,256 @@
+<div class="min-h-screen bg-gray-50">
+  <!-- Loading State -->
+  <div
+    *ngIf="!attraction"
+    class="flex justify-center items-center min-h-screen"
+  >
+    <div class="text-center">
+      <div
+        class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"
+      ></div>
+      <p class="text-gray-600">Loading attraction details...</p>
+    </div>
+  </div>
+
+  <!-- Attraction Detail Content -->
+  <div *ngIf="attraction" class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Back Button -->
+    <div class="mb-6">
+      <app-button variant="secondary" (clicked)="goBack()">
+        ← Back to Home
+      </app-button>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="relative mb-8">
+      <div class="h-96 md:h-125 rounded-2xl overflow-hidden shadow-2xl">
+        <img
+          [src]="attraction.image"
+          [alt]="attraction.name"
+          class="w-full h-full object-cover"
+        />
+        <div
+          class="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent"
+        ></div>
+        <div class="absolute bottom-6 left-6 text-white">
+          <div class="flex items-center gap-2 mb-2">
+            <span
+              class="bg-blue-600 text-white text-xs font-semibold px-3 py-1 rounded-full"
+            >
+              {{ attraction.category }}
+            </span>
+            <span class="text-sm opacity-90">
+              📍 {{ attraction.location }}
+            </span>
+          </div>
+          <h1 class="text-4xl md:text-5xl font-bold mb-2">
+            {{ attraction.name }}
+          </h1>
+          <p class="text-xl opacity-90">{{ attraction.description }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Info Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-xl p-4 shadow-md text-center">
+        <div class="text-2xl mb-1">👥</div>
+        <div class="text-sm text-gray-600">Visitors</div>
+        <div class="font-bold text-lg">{{ attraction.visitors }}</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-md text-center">
+        <div class="text-2xl mb-1">🕒</div>
+        <div class="text-sm text-gray-600">Best Time</div>
+        <div class="font-bold text-lg">{{ attraction.bestTimeToVisit }}</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-md text-center">
+        <div class="text-2xl mb-1">💰</div>
+        <div class="text-sm text-gray-600">Entry Fee</div>
+        <div class="font-bold text-lg">{{ attraction.entryFee }}</div>
+      </div>
+      <div class="bg-white rounded-xl p-4 shadow-md text-center">
+        <div class="text-2xl mb-1">🕐</div>
+        <div class="text-sm text-gray-600">Hours</div>
+        <div class="font-bold text-lg">{{ attraction.openingHours }}</div>
+      </div>
+    </div>
+
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Main Content -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- History Section -->
+        <div class="bg-white rounded-2xl p-8 shadow-lg">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center"
+            >
+              <span class="text-2xl">📜</span>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900">History</h2>
+          </div>
+          <div class="prose prose-lg max-w-none">
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+              {{ attraction.history }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Detailed Description -->
+        <div class="bg-white rounded-2xl p-8 shadow-lg">
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+            >
+              <span class="text-2xl">📖</span>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900">
+              About {{ attraction.name }}
+            </h2>
+          </div>
+          <div class="prose prose-lg max-w-none">
+            <p class="text-gray-700 leading-relaxed whitespace-pre-line">
+              {{ attraction.detailedDescription }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Additional Images -->
+        <div
+          *ngIf="
+            attraction.additionalImages &&
+            attraction.additionalImages.length > 0
+          "
+          class="bg-white rounded-2xl p-8 shadow-lg"
+        >
+          <div class="flex items-center gap-3 mb-6">
+            <div
+              class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center"
+            >
+              <span class="text-2xl">📸</span>
+            </div>
+            <h2 class="text-3xl font-bold text-gray-900">Gallery</h2>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div
+              *ngFor="let image of attraction.additionalImages"
+              class="rounded-xl overflow-hidden shadow-md"
+            >
+              <img
+                [src]="image"
+                [alt]="attraction.name"
+                class="w-full h-48 object-cover hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="space-y-6">
+        <!-- Quick Facts -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center"
+            >
+              <span class="text-xl">💡</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Quick Facts</h3>
+          </div>
+          <ul class="space-y-3">
+            <li
+              *ngFor="let fact of attraction.facts"
+              class="flex items-start gap-2"
+            >
+              <span class="text-blue-600 mt-1">•</span>
+              <span class="text-gray-700 text-sm">{{ fact }}</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Plan Your Visit -->
+        <div
+          class="bg-linear-to-br from-blue-600 to-blue-700 rounded-2xl p-6 text-white shadow-lg"
+        >
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center"
+            >
+              <span class="text-xl">🎯</span>
+            </div>
+            <h3 class="text-xl font-bold">Plan Your Visit</h3>
+          </div>
+          <div class="space-y-3 mb-6">
+            <div class="flex justify-between items-center">
+              <span class="text-blue-100">Best Time:</span>
+              <span class="font-semibold">{{
+                attraction.bestTimeToVisit
+              }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-blue-100">Entry Fee:</span>
+              <span class="font-semibold">{{ attraction.entryFee }}</span>
+            </div>
+            <div class="flex justify-between items-center">
+              <span class="text-blue-100">Hours:</span>
+              <span class="font-semibold">{{ attraction.openingHours }}</span>
+            </div>
+          </div>
+          <app-button
+            variant="secondary"
+            size="large"
+            [fullWidth]="true"
+            (clicked)="navigateToHotels()"
+          >
+            Book Hotels Near {{ attraction.name }}
+          </app-button>
+        </div>
+
+        <!-- Location Info -->
+        <div class="bg-white rounded-2xl p-6 shadow-lg">
+          <div class="flex items-center gap-3 mb-4">
+            <div
+              class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center"
+            >
+              <span class="text-xl">📍</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900">Location</h3>
+          </div>
+          <p class="text-gray-700 mb-3">{{ attraction.location }}</p>
+          <div class="bg-gray-100 rounded-lg p-4 text-center">
+            <p class="text-sm text-gray-600 mb-2">Interactive Map</p>
+            <div
+              class="bg-gray-200 h-32 rounded-lg flex items-center justify-center"
+            >
+              <span class="text-gray-500">Map Placeholder</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Related Attractions -->
+    <div class="mt-12 bg-white rounded-2xl p-8 shadow-lg">
+      <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">
+        Explore More in Cambodia
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div
+          *ngFor="let related of getRelatedAttractions()"
+          class="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow cursor-pointer"
+          (click)="navigateToAttraction(related.id)"
+        >
+          <img
+            [src]="related.image"
+            [alt]="related.name"
+            class="w-full h-32 object-cover rounded-lg mb-3"
+          />
+          <h3 class="font-bold text-gray-900 mb-1">{{ related.name }}</h3>
+          <p class="text-sm text-gray-600">{{ related.location }}</p>
+          <p class="text-xs text-blue-600 mt-2">{{ related.category }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,25 @@
+<button
+  [type]="type"
+  [disabled]="disabled || loading"
+  [ngClass]="{
+    btn: true,
+    'btn-primary': variant === 'primary',
+    'btn-secondary': variant === 'secondary',
+    'btn-danger': variant === 'danger',
+    'btn-success': variant === 'success',
+    'btn-warning': variant === 'warning',
+    'btn-view': variant === 'view',
+    'btn-small': size === 'small',
+    'btn-medium': size === 'medium',
+    'btn-large': size === 'large',
+    'btn-full-width': fullWidth,
+    'btn-loading': loading
+  }"
+  (click)="onClick($event)"
+>
+  <span *ngIf="loading" class="spinner-icon"></span>
+  <span *ngIf="icon && !loading" class="btn-icon">{{ icon }}</span>
+  <span class="btn-content">
+    <ng-content></ng-content>
+  </span>
+</button>

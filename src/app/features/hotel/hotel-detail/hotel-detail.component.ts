@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { HotelService } from '../service/hotel.service';
 import { Hotel, Room } from '../../../core/model/hotel.model';
 import {
@@ -23,6 +24,7 @@ export class HotelDetailComponent implements OnInit {
   private hotelService = inject(HotelService);
   private bookingService = inject(BookingServiceService);
   private profileService = inject(ProfileService);
+  private sanitizer = inject(DomSanitizer);
 
   hotel: Hotel | null = null;
   rooms: Room[] = [];
@@ -88,6 +90,10 @@ export class HotelDetailComponent implements OnInit {
   getImageUrl(fileName: string): string {
     if (!fileName) return '';
     return `http://localhost:8080/api/v1/images/${fileName}`;
+  }
+
+  getSafeMapUrl(url: string): SafeResourceUrl {
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   getRoomTypeLabel(roomType: string): string {

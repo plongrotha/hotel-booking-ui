@@ -28,6 +28,7 @@
           *ngIf="!isLoading && allHotels.length > 0"
         >
           <select
+            id="location-filter-select"
             [(ngModel)]="selectedLocation"
             (change)="filterByLocation()"
             class="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
@@ -38,6 +39,7 @@
             </option>
           </select>
           <button
+            id="clear-filter-btn"
             *ngIf="selectedLocation"
             (click)="clearFilter()"
             class="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white border border-blue-600 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
@@ -58,6 +60,7 @@
             Clear Filter
           </button>
           <select
+            id="sort-select"
             class="w-full sm:w-auto px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors"
           >
             <option>Sort by: Newest</option>
@@ -121,6 +124,7 @@
             </h3>
             <p class="text-red-600 text-sm">{{ errorMessage }}</p>
             <button
+              id="retry-load-hotels-btn"
               (click)="loadHotels()"
               class="mt-3 text-sm text-red-600 font-semibold hover:text-red-700 underline"
             >
@@ -132,6 +136,7 @@
 
       <!-- Hotels Grid -->
       <div
+        id="hotels-grid"
         *ngIf="!isLoading && hotels.length > 0"
         class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
       >
@@ -245,6 +250,7 @@
             <!-- Action Button -->
             <div class="pt-3 border-t border-gray-100">
               <button
+                id="view-hotel-details-btn"
                 (click)="viewHotelDetails(hotel.hotelId)"
                 class="w-full bg-blue-600 text-white px-4 py-2.5 rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm hover:shadow-md flex items-center justify-center gap-2"
               >
@@ -276,6 +282,7 @@
 
       <!-- No Results -->
       <div
+        id="no-hotels-state"
         *ngIf="!isLoading && hotels.length === 0 && !errorMessage"
         class="text-center py-16"
       >
@@ -304,6 +311,7 @@
             There are currently no hotels in the system. Check back later!
           </p>
           <button
+            id="refresh-hotels-btn"
             (click)="loadHotels()"
             class="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors inline-flex items-center gap-2"
           >
@@ -327,11 +335,13 @@
 
       <!-- Pagination -->
       <div
+        id="pagination"
         *ngIf="!isLoading && hotels.length > 0 && totalPages > 1"
         class="mt-8 flex justify-center"
       >
         <div class="flex items-center gap-2">
           <button
+            id="previous-page-btn"
             (click)="previousPage()"
             [disabled]="page === 0"
             [class.opacity-50]="page === 0"
@@ -355,6 +365,7 @@
           </div>
 
           <button
+            id="next-page-btn"
             (click)="nextPage()"
             [disabled]="page >= totalPages - 1"
             [class.opacity-50]="page >= totalPages - 1"

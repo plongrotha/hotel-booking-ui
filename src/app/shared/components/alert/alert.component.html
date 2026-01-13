@@ -1,0 +1,14 @@
+<div *ngIf="show" class="alert" [ngClass]="'alert-' + type">
+  <span class="icon">
+    <ng-container [ngSwitch]="type">
+      <ng-container *ngSwitchCase="'success'">✓</ng-container>
+      <ng-container *ngSwitchCase="'error'">⚠</ng-container>
+      <ng-container *ngSwitchCase="'warning'">⚠</ng-container>
+      <ng-container *ngSwitchCase="'info'">ℹ</ng-container>
+    </ng-container>
+  </span>
+  <div>
+    <h4 *ngIf="title">{{ title }}</h4>
+    <p>{{ message }}</p>
+  </div>
+</div>

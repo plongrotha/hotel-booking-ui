@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import {
   FormsModule,
   ReactiveFormsModule,
@@ -20,10 +20,26 @@ import {
   Room,
 } from '../../core/model/hotel.model';
 import { ImageService } from '../../core/services/image.service';
+import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
+import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
+import { SearchBoxComponent } from '../../shared/components/search-box/search-box.component';
+import { ImageUploadComponent } from '../../shared/components/image-upload/image-upload.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-owner',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    StatCardComponent,
+    AlertComponent,
+    LoadingSpinnerComponent,
+    SearchBoxComponent,
+    ImageUploadComponent,
+    ButtonComponent,
+  ],
   templateUrl: './owner.component.html',
   styleUrl: './owner.component.css',
 })
@@ -49,6 +65,7 @@ export class OwnerComponent implements OnInit {
   bookings: Booking[] = [];
   filteredBookings: Booking[] = [];
   bookingSearchTerm: string = '';
+  bookingFilter: 'all' | 'checkin-today' | 'checkout-today' = 'all';
 
   loading: boolean = false;
   error: string = '';
@@ -63,6 +80,7 @@ export class OwnerComponent implements OnInit {
     hotelName: '',
     location: '',
     hotelImage: '',
+    googleMapUrl: '',
   };
 
   // Edit Hotel Dialog
@@ -76,6 +94,7 @@ export class OwnerComponent implements OnInit {
     hotelName: '',
     location: '',
     hotelImage: '',
+    googleMapUrl: '',
   };
 
   // Add Room Dialog
@@ -94,6 +113,16 @@ export class OwnerComponent implements OnInit {
   selectedHotelForView: Hotel | null = null;
   hotelRooms: Room[] = [];
 
+  // Edit Room Dialog
+  isEditRoomDialogOpen: boolean = false;
+  isUpdatingRoom: boolean = false;
+  updateRoomError: string = '';
+  updateRoomSuccess: boolean = false;
+  editingRoom: Room | null = null;
+  editRoomForm!: FormGroup;
+
+  isDisabledRoomNumber: boolean = true;
+
   // Image Upload
   selectedImageFile: File | null = null;
   imagePreviewUrl: string | null = null;
@@ -108,12 +137,21 @@ export class OwnerComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadHotels();
-    // this.loadBookings();
+    this.loadBookings();
     this.initializeAddRoomForm();
+    this.initializeEditRoomForm();
   }
 
   initializeAddRoomForm(): void {
     this.addRoomForm = this.fb.group({
+      roomNumber: ['', [Validators.required, Validators.min(1)]],
+      price: ['', [Validators.required, Validators.min(0)]],
+      roomType: [RoomType.SINGLE, Validators.required],
+    });
+  }
+
+  initializeEditRoomForm(): void {
+    this.editRoomForm = this.fb.group({
       roomNumber: ['', [Validators.required, Validators.min(1)]],
       price: ['', [Validators.required, Validators.min(0)]],
       roomType: [RoomType.SINGLE, Validators.required],
@@ -164,6 +202,53 @@ export class OwnerComponent implements OnInit {
     );
   }
 
+  setBookingFilter(filter: 'all' | 'checkin-today' | 'checkout-today'): void {
+    this.bookingFilter = filter;
+    this.applyBookingFilters();
+  }
+
+  searchBookings(): void {
+    this.applyBookingFilters();
+  }
+
+  applyBookingFilters(): void {
+    const term = this.bookingSearchTerm.toLowerCase();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let filtered = this.bookings;
+
+    // Apply date filter
+    if (this.bookingFilter === 'checkin-today') {
+      filtered = filtered.filter((booking) => {
+        const checkInDate = new Date(booking.checkInDate);
+        checkInDate.setHours(0, 0, 0, 0);
+        return checkInDate.getTime() === today.getTime();
+      });
+    } else if (this.bookingFilter === 'checkout-today') {
+      filtered = filtered.filter((booking) => {
+        const checkOutDate = new Date(booking.checkOutDate);
+        checkOutDate.setHours(0, 0, 0, 0);
+        return checkOutDate.getTime() === today.getTime();
+      });
+    }
+
+    // Apply search term filter
+    if (term) {
+      filtered = filtered.filter(
+        (booking) =>
+          booking.bookingId.toString().includes(term) ||
+          (booking.clientName &&
+            booking.clientName.toLowerCase().includes(term)) ||
+          booking.userId.toString().includes(term) ||
+          booking.hotelId.toString().includes(term) ||
+          booking.roomId.toString().includes(term)
+      );
+    }
+
+    this.filteredBookings = filtered;
+  }
+
   openCreateHotelDialog(): void {
     this.isCreateHotelDialogOpen = true;
     this.createHotelError = '';
@@ -172,6 +257,7 @@ export class OwnerComponent implements OnInit {
       hotelName: '',
       location: '',
       hotelImage: '',
+      googleMapUrl: '',
     };
   }
 
@@ -212,6 +298,7 @@ export class OwnerComponent implements OnInit {
       hotelName: hotel.hotelName,
       location: hotel.location,
       hotelImage: hotel.hotelImage,
+      googleMapUrl: hotel.googleMapUrl || '',
     };
 
     // Set preview if hotel has an image
@@ -344,6 +431,19 @@ export class OwnerComponent implements OnInit {
     return this.addRoomForm.get('roomType');
   }
 
+  // Getter methods for edit room form controls
+  get editRoomNumber() {
+    return this.editRoomForm.get('roomNumber');
+  }
+
+  get editPrice() {
+    return this.editRoomForm.get('price');
+  }
+
+  get editRoomType() {
+    return this.editRoomForm.get('roomType');
+  }
+
   // View Rooms Methods
   openViewRoomsDialog(hotel: Hotel): void {
     this.selectedHotelForView = hotel;
@@ -409,13 +509,75 @@ export class OwnerComponent implements OnInit {
     return 'Unavailable';
   }
 
+  // Edit Room Methods
+  openEditRoomDialog(room: Room): void {
+    this.editingRoom = room;
+    this.isEditRoomDialogOpen = true;
+    this.updateRoomError = '';
+    this.updateRoomSuccess = false;
+    this.editRoomForm.patchValue({
+      roomNumber: room.roomNumber,
+      price: room.price,
+      roomType: room.roomType,
+    });
+  }
+
+  closeEditRoomDialog(): void {
+    this.isEditRoomDialogOpen = false;
+    this.updateRoomError = '';
+    this.updateRoomSuccess = false;
+    this.editingRoom = null;
+    this.editRoomForm.reset();
+  }
+
+  onUpdateRoom(): void {
+    if (this.editRoomForm.invalid || !this.editingRoom) {
+      this.editRoomForm.markAllAsTouched();
+      return;
+    }
+
+    this.isUpdatingRoom = true;
+    this.updateRoomError = '';
+    this.updateRoomSuccess = false;
+
+    const roomData: Partial<RoomRequest> = {
+      roomNumber: this.editRoomForm.value.roomNumber,
+      price: this.editRoomForm.value.price,
+      roomType: this.editRoomForm.value.roomType,
+    };
+
+    this.ownerService.updateRoom(this.editingRoom.roomId, roomData).subscribe({
+      next: () => {
+        this.isUpdatingRoom = false;
+        this.updateRoomSuccess = true;
+        // Reload rooms to show updated data
+        if (this.selectedHotelForView) {
+          this.loadHotelRooms(this.selectedHotelForView.hotelId);
+        }
+        setTimeout(() => {
+          this.closeEditRoomDialog();
+        }, 1500);
+      },
+      error: (err) => {
+        this.isUpdatingRoom = false;
+        this.updateRoomError =
+          err.error?.detail ||
+          err.error?.message ||
+          'Failed to update room. Please try again.';
+        console.error(err);
+      },
+    });
+  }
+
   // Booking Management Methods
   loadBookings(): void {
     this.loading = true;
     this.ownerService.getMyHotelBookings().subscribe({
       next: (data) => {
         this.bookings = data.data;
-        this.filteredBookings = data.data;
+        this.applyBookingFilters();
+        console.log(this.bookings);
+
         this.stats.totalBookings = this.bookings.length;
         this.loading = false;
       },
@@ -425,16 +587,6 @@ export class OwnerComponent implements OnInit {
         console.error(err);
       },
     });
-  }
-
-  searchBookings(): void {
-    const term = this.bookingSearchTerm.toLowerCase();
-    this.filteredBookings = this.bookings.filter(
-      (booking) =>
-        booking.hotelName?.toLowerCase().includes(term) ||
-        booking.userName?.toLowerCase().includes(term) ||
-        booking.status.toLowerCase().includes(term)
-    );
   }
 
   updateBookingStatus(bookingId: number, status: string): void {
