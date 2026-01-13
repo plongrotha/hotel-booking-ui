@@ -1,0 +1,171 @@
+<div class="table-wrapper">
+  <!-- Loading Spinner -->
+  <div *ngIf="loading" class="table-loading">
+    <div class="spinner"></div>
+    <p>Loading data...</p>
+  </div>
+
+  <!-- Table -->
+  <table
+    *ngIf="!loading"
+    [id]="tableId"
+    class="data-table"
+    [class.table-striped]="striped"
+    [class.table-hoverable]="hoverable"
+    [class.table-bordered]="bordered"
+  >
+    <thead>
+      <tr>
+        <th
+          *ngFor="let column of columns"
+          [class]="getAlignClass(column.align)"
+          [style.width]="column.width"
+          [class.sortable]="column.sortable"
+          (click)="onSort(column)"
+        >
+          <div class="th-content">
+            <span>{{ column.label }}</span>
+            <span
+              *ngIf="column.sortable"
+              class="sort-icon"
+              [class.active]="sortColumn === column.key"
+            >
+              <svg
+                *ngIf="sortColumn !== column.key"
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"
+                ></path>
+              </svg>
+              <svg
+                *ngIf="sortColumn === column.key && sortDirection === 'asc'"
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 15l7-7 7 7"
+                ></path>
+              </svg>
+              <svg
+                *ngIf="sortColumn === column.key && sortDirection === 'desc'"
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                ></path>
+              </svg>
+            </span>
+          </div>
+        </th>
+        <th *ngIf="actions.length > 0" class="actions-column">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let row of data; let i = index"
+        (click)="onRowClick(row)"
+        [class.clickable]="rowClicked.observed"
+      >
+        <td
+          *ngFor="let column of columns"
+          [class]="getAlignClass(column.align) + ' ' + (column.cssClass || '')"
+        >
+          <!-- Image Type -->
+          <div *ngIf="column.type === 'image'" class="table-image">
+            <img
+              [src]="getCellValue(row, column)"
+              [alt]="column.label"
+              class="table-thumbnail"
+            />
+          </div>
+
+          <!-- Badge Type -->
+          <span
+            *ngIf="column.type === 'badge'"
+            class="badge"
+            [ngClass]="column.format ? column.format(row[column.key], row) : ''"
+          >
+            {{ getCellValue(row, column) }}
+          </span>
+
+          <!-- Custom Type -->
+          <div
+            *ngIf="column.type === 'custom'"
+            [innerHTML]="getCellValue(row, column)"
+          ></div>
+
+          <!-- Default Text Type -->
+          <span
+            *ngIf="
+              !column.type ||
+              column.type === 'text' ||
+              column.type === 'number' ||
+              column.type === 'date' ||
+              column.type === 'currency'
+            "
+          >
+            {{ getCellValue(row, column) }}
+          </span>
+        </td>
+
+        <!-- Actions Column -->
+        <td *ngIf="actions.length > 0" class="actions-cell">
+          <div class="action-buttons">
+            <button
+              *ngFor="let action of actions"
+              [hidden]="!isActionVisible(action, row)"
+              [disabled]="isActionDisabled(action, row)"
+              [class]="'btn-action ' + (action.cssClass || '')"
+              [attr.id]="action.id + '-' + i"
+              (click)="onActionClick(action.id, row, $event)"
+              [title]="action.label"
+            >
+              <span *ngIf="action.icon" [innerHTML]="action.icon"></span>
+              {{ action.label }}
+            </button>
+          </div>
+        </td>
+      </tr>
+
+      <!-- Empty State -->
+      <tr *ngIf="data.length === 0" class="empty-row">
+        <td [attr.colspan]="columns.length + (actions.length > 0 ? 1 : 0)">
+          <div class="empty-state">
+            <svg
+              class="empty-icon"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+              ></path>
+            </svg>
+            <p>{{ emptyMessage }}</p>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

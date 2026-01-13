@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://192.168.0.198:8080',
+  apiUrl: 'http://172.16.12.164:8080/api', // Use your computer's IP
 };

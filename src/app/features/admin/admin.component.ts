@@ -238,8 +238,8 @@ export class AdminComponent implements OnInit {
     this.loading = true;
     this.adminService.getAllBookings().subscribe({
       next: (data) => {
-        this.bookings = data;
-        this.filteredBookings = data;
+        this.bookings = data.data;
+        this.filteredBookings = data.data;
         this.loading = false;
       },
       error: (err) => {

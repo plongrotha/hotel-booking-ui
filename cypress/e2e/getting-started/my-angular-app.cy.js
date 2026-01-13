@@ -100,6 +100,7 @@ describe("Access Owner Dashboard", () => {
 
     // Then click Owner Dashboard button
     cy.contains("button", "Owner Dashboard").click();
-    cy.url().should("include", "/owner");
+    cy.url().s;
+    hould("include", "/owner");
   });
 });

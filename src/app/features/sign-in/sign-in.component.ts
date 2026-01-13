@@ -10,10 +10,17 @@ import {
 import { Router, RouterModule } from '@angular/router';
 import { SignInService } from './service/sign-in.service';
 import { SigninRequest } from '../../core/model/auth.model';
+import { ButtonComponent } from '../../shared/components/button/button.component';
 
 @Component({
   selector: 'app-sign-in',
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, FormsModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    FormsModule,
+    ButtonComponent,
+  ],
   templateUrl: './sign-in.component.html',
   styleUrl: './sign-in.component.css',
 })
@@ -54,10 +61,16 @@ export class SignInComponent implements OnInit {
         this.isLoading = false;
         console.log(response);
         console.log('Login successful');
-        // Tokens are already saved in the service via tap operator
 
-        // Navigate to home page after successful sign in
-        this.router.navigate(['/']);
+        // Navigate to page after successful sign in
+        if (response.role === 'ROLE_ADMIN') {
+          this.router.navigate(['/admin']);
+          return;
+        } else if (response.role === 'ROLE_OWNER') {
+          this.router.navigate(['/owner']);
+        } else {
+          this.router.navigate(['/']);
+        }
       },
       error: (error) => {
         this.isLoading = false;
