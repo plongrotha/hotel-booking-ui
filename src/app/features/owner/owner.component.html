@@ -13,7 +13,11 @@
       id="dashboard-tab-btn"
       (clicked)="setActiveTab('dashboard')"
     >
-      📊 Dashboard
+      <lucide-angular
+        [class]="'mr-1'"
+        [img]="ChartNoAxesCombinedIcon"
+      ></lucide-angular>
+      Dashboard
     </app-button>
     <app-button
       [variant]="activeTab === 'hotels' ? 'primary' : 'secondary'"
@@ -21,7 +25,8 @@
       id="hotels-tab-btn"
       (clicked)="setActiveTab('hotels')"
     >
-      🏨 My Hotels
+      <lucide-angular [class]="'mr-1'" [img]="BuildingIcon"></lucide-angular> My
+      Hotels
     </app-button>
     <app-button
       id="bookings-tab-btn"
@@ -29,7 +34,8 @@
       size="large"
       (clicked)="setActiveTab('bookings')"
     >
-      📋 Bookings
+      <lucide-angular [class]="'mr-1'" [img]="NotepadTextIcon"></lucide-angular>
+      Bookings
     </app-button>
   </nav>
 
@@ -48,29 +54,37 @@
   <div class="tab-content" *ngIf="activeTab === 'dashboard' && !loading">
     <div class="stats-grid">
       <app-stat-card
-        icon="🏨"
+        [icon]="BuildingIcon"
         [value]="stats.totalHotels"
         label="My Hotels"
+        [color]="'white'"
+        [isLucideIcon]="true"
       ></app-stat-card>
 
       <app-stat-card
-        icon="📅"
+        [icon]="NotepadTextIcon"
         [value]="stats.totalBookings"
         label="Total Bookings"
+        [color]="'white'"
+        [isLucideIcon]="true"
       ></app-stat-card>
 
       <app-stat-card
-        icon="✅"
+        [icon]="ClipboardCheckIcon"
         [value]="stats.activeBookings"
         label="Active Bookings"
+        [color]="'white'"
+        [isLucideIcon]="true"
       ></app-stat-card>
 
       <app-stat-card
-        icon="💰"
+        [icon]="CircleDollarSignIcon"
         [value]="stats.totalRevenue"
         label="Total Revenue"
         prefix="$"
+        [color]="'white'"
         [formatAsNumber]="true"
+        [isLucideIcon]="true"
       ></app-stat-card>
     </div>
   </div>

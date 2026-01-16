@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminService, Booking, DashboardStats } from './service/admin.service';
@@ -6,14 +6,36 @@ import { UserResponse } from '../../core/model/user.model';
 import { Hotel } from '../../core/model/hotel.model';
 import { SignupRequest } from '../../core/model/auth.model';
 import { StatCardComponent } from '../../shared/components/stat-card/stat-card.component';
+import { ButtonComponent } from '../../shared/components/button/button.component';
+import {
+  BadgeDollarSignIcon,
+  CircleDollarSignIcon,
+  HomeIcon,
+  LucideAngularModule,
+  NotebookPenIcon,
+  UserIcon,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-admin',
-  imports: [CommonModule, FormsModule, StatCardComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    StatCardComponent,
+    ButtonComponent,
+    LucideAngularModule,
+  ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, OnDestroy {
+  // icons
+  readonly UserIcon = UserIcon;
+  readonly HomeIcon = HomeIcon;
+  readonly BadgeDollarSignIcon = BadgeDollarSignIcon;
+  readonly CircleDollarSignIcon = CircleDollarSignIcon;
+  readonly NotebookPenIcon = NotebookPenIcon;
+
   activeTab: 'dashboard' | 'users' | 'hotels' | 'bookings' = 'dashboard';
 
   // Dashboard Data
@@ -54,12 +76,14 @@ export class AdminComponent implements OnInit {
     role: '',
   };
 
-  constructor(private adminService: AdminService) {
+  constructor(private adminService: AdminService) {}
+
+  ngOnInit(): void {
     this.loadHotels();
     this.loadUsers();
   }
 
-  ngOnInit(): void {}
+  ngOnDestroy(): void {}
 
   setActiveTab(tab: 'dashboard' | 'users' | 'hotels' | 'bookings'): void {
     this.activeTab = tab;
@@ -178,14 +202,19 @@ export class AdminComponent implements OnInit {
           password: '',
           role: '',
         };
-        // setTimeout(() => {
-        //   this.closeCreateUserDialog();
-        // }, 1500);
+        // Hide success message after 2 seconds
+        setTimeout(() => {
+          this.createUserSuccess = false;
+        }, 2000);
       },
       error: (err) => {
         this.isCreatingUser = false;
         this.createUserError = 'Failed to create user';
         console.error(err);
+        // Hide error message after 2 seconds
+        setTimeout(() => {
+          this.createUserError = '';
+        }, 2000);
       },
     });
   }
@@ -197,7 +226,7 @@ export class AdminComponent implements OnInit {
       next: (data) => {
         this.hotels = data.data;
         this.stats.totalHotels = this.hotels.length;
-        this.filteredHotels = data.data;
+        this.filteredHotels = this.hotels;
         this.loading = false;
       },
       error: (err) => {

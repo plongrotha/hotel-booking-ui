@@ -26,6 +26,14 @@ import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner
 import { SearchBoxComponent } from '../../shared/components/search-box/search-box.component';
 import { ImageUploadComponent } from '../../shared/components/image-upload/image-upload.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import {
+  BuildingIcon,
+  ChartNoAxesCombinedIcon,
+  CircleDollarSignIcon,
+  ClipboardCheckIcon,
+  LucideAngularModule,
+  NotepadTextIcon,
+} from 'lucide-angular';
 
 @Component({
   selector: 'app-owner',
@@ -39,12 +47,18 @@ import { ButtonComponent } from '../../shared/components/button/button.component
     SearchBoxComponent,
     ImageUploadComponent,
     ButtonComponent,
+    LucideAngularModule,
   ],
   templateUrl: './owner.component.html',
   styleUrl: './owner.component.css',
 })
 export class OwnerComponent implements OnInit {
   activeTab: 'dashboard' | 'hotels' | 'bookings' = 'dashboard';
+  readonly BuildingIcon = BuildingIcon;
+  readonly NotepadTextIcon = NotepadTextIcon;
+  readonly ClipboardCheckIcon = ClipboardCheckIcon;
+  readonly CircleDollarSignIcon = CircleDollarSignIcon;
+  readonly ChartNoAxesCombinedIcon = ChartNoAxesCombinedIcon;
 
   private fb = inject(FormBuilder);
 

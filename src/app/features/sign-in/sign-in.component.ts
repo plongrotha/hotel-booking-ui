@@ -59,18 +59,10 @@ export class SignInComponent implements OnInit {
     this.signInService.signIn(formData).subscribe({
       next: (response) => {
         this.isLoading = false;
-        console.log(response);
+        console.log('Login response:', response);
         console.log('Login successful');
-
-        // Navigate to page after successful sign in
-        if (response.role === 'ROLE_ADMIN') {
-          this.router.navigate(['/admin']);
-          return;
-        } else if (response.role === 'ROLE_OWNER') {
-          this.router.navigate(['/owner']);
-        } else {
-          this.router.navigate(['/']);
-        }
+        this.router.navigate(['/profile']);
+        console.log('navigate to profile');
       },
       error: (error) => {
         this.isLoading = false;

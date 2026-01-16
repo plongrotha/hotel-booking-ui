@@ -7,42 +7,42 @@
 
   <!-- Navigation Tabs -->
   <nav class="admin-nav">
-    <button
+    <app-button
       id="dashboard-tab-btn"
-      class="nav-btn"
-      [class.active]="activeTab === 'dashboard'"
-      (click)="setActiveTab('dashboard')"
+      variant="secondary"
+      [ngClass]="{ active: activeTab === 'dashboard' }"
+      (clicked)="setActiveTab('dashboard')"
     >
       <span class="icon"><img src="chart.png" alt="Dashboard" /></span>
       Dashboard
-    </button>
-    <button
+    </app-button>
+    <app-button
       id="users-tab-btn"
-      class="nav-btn"
-      [class.active]="activeTab === 'users'"
-      (click)="setActiveTab('users')"
+      variant="secondary"
+      [ngClass]="{ active: activeTab === 'users' }"
+      (clicked)="setActiveTab('users')"
     >
       <span class="icon"><img src="people.png" alt="Users" /></span>
       Users
-    </button>
-    <button
+    </app-button>
+    <app-button
       id="hotels-tab-btn"
-      class="nav-btn"
-      [class.active]="activeTab === 'hotels'"
-      (click)="setActiveTab('hotels')"
+      variant="secondary"
+      [ngClass]="{ active: activeTab === 'hotels' }"
+      (clicked)="setActiveTab('hotels')"
     >
       <span class="icon"><img src="skyscraper.png" alt="hotels" /></span>
       Hotels
-    </button>
-    <button
+    </app-button>
+    <app-button
       id="bookings-tab-btn"
-      class="nav-btn"
-      [class.active]="activeTab === 'bookings'"
-      (click)="setActiveTab('bookings')"
+      variant="secondary"
+      [ngClass]="{ active: activeTab === 'bookings' }"
+      (clicked)="setActiveTab('bookings')"
     >
       <span class="icon"><img src="to-do-list.png" alt="booking" /></span>
       Bookings
-    </button>
+    </app-button>
   </nav>
 
   <!-- Error Message -->
@@ -60,29 +60,37 @@
   <div class="tab-content" *ngIf="activeTab === 'dashboard' && !loading">
     <div class="stats-grid">
       <app-stat-card
-        icon="👥"
+        [icon]="UserIcon"
         [value]="stats.totalUsers"
         label="Total Users"
+        [isLucideIcon]="true"
+        [color]="'white'"
       ></app-stat-card>
 
       <app-stat-card
-        icon="🏨"
+        [icon]="HomeIcon"
         [value]="stats.totalHotels"
         label="Total Hotels"
+        [color]="'white'"
+        [isLucideIcon]="true"
       ></app-stat-card>
 
       <app-stat-card
-        icon="📋"
+        [icon]="NotebookPenIcon"
         [value]="stats.totalBookings"
         label="Total Bookings"
+        [color]="'white'"
+        [isLucideIcon]="true"
       ></app-stat-card>
 
       <app-stat-card
-        icon="💰"
+        [icon]="CircleDollarSignIcon"
         [value]="stats.totalRevenue"
         label="Total Revenue"
         prefix="$"
         [formatAsNumber]="true"
+        [isLucideIcon]="true"
+        [color]="'white'"
       ></app-stat-card>
     </div>
   </div>
@@ -101,14 +109,15 @@
             (input)="searchUsers()"
           />
         </div>
-        <button
+        <app-button
           id="add-user-btn"
-          class="btn-add"
-          (click)="openCreateUserDialog()"
+          variant="success"
+          icon="+"
+          (clicked)="openCreateUserDialog()"
+          s
         >
-          <span class="icon">+</span>
           Add New User
-        </button>
+        </app-button>
       </div>
     </div>
 
@@ -145,18 +154,20 @@
             </td>
             <td>
               <div class="action-buttons">
-                <button
-                  class="btn-toggle toggle-user-btn"
-                  (click)="toggleUserStatus(user)"
+                <app-button
+                  variant="warning"
+                  size="small"
+                  (clicked)="toggleUserStatus(user)"
                 >
                   {{ user.enabled ? "Disable" : "Enable" }}
-                </button>
-                <button
-                  class="btn-delete delete-user-btn"
-                  (click)="deleteUser(user.id)"
+                </app-button>
+                <app-button
+                  variant="danger"
+                  size="small"
+                  (clicked)="deleteUser(user.id)"
                 >
                   Delete
-                </button>
+                </app-button>
               </div>
             </td>
           </tr>
@@ -204,12 +215,13 @@
             <td>{{ hotel.createdAt | date : "short" }}</td>
             <td>
               <div class="action-buttons">
-                <button
-                  class="btn-delete delete-hotel-btn"
-                  (click)="deleteHotel(hotel.hotelId)"
+                <app-button
+                  variant="danger"
+                  size="small"
+                  (clicked)="deleteHotel(hotel.hotelId)"
                 >
                   Delete
-                </button>
+                </app-button>
               </div>
             </td>
           </tr>
@@ -278,12 +290,13 @@
             </td>
             <td>
               <div class="action-buttons">
-                <button
-                  class="btn-delete delete-booking-btn"
-                  (click)="deleteBooking(booking.bookingId)"
+                <app-button
+                  variant="danger"
+                  size="small"
+                  (clicked)="deleteBooking(booking.bookingId)"
                 >
                   Delete
-                </button>
+                </app-button>
               </div>
             </td>
           </tr>
@@ -312,13 +325,14 @@
             <p>Add a new user and assign a role</p>
           </div>
         </div>
-        <button
+        <app-button
           id="close-modal-btn"
-          class="btn-close"
-          (click)="closeCreateUserDialog()"
+          variant="secondary"
+          size="small"
+          (clicked)="closeCreateUserDialog()"
         >
           &times;
-        </button>
+        </app-button>
       </div>
 
       <!-- Dialog Body -->
@@ -402,24 +416,24 @@
 
         <!-- Dialog Footer -->
         <div class="modal-footer">
-          <button
+          <app-button
             id="cancel-create-user-btn"
             type="button"
-            class="btn-cancel"
-            (click)="closeCreateUserDialog()"
+            variant="secondary"
             [disabled]="isCreatingUser"
+            (clicked)="closeCreateUserDialog()"
           >
             Cancel
-          </button>
-          <button
+          </app-button>
+          <app-button
             id="submit-create-user-btn"
             type="submit"
-            class="btn-submit"
+            variant="primary"
             [disabled]="isCreatingUser"
+            [loading]="isCreatingUser"
           >
-            <span *ngIf="isCreatingUser" class="spinner-small"></span>
-            <span>{{ isCreatingUser ? "Creating..." : "Create User" }}</span>
-          </button>
+            {{ isCreatingUser ? "Creating..." : "Create User" }}
+          </app-button>
         </div>
       </form>
     </div>

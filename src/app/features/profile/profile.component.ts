@@ -8,7 +8,20 @@ import { SignInService } from '../sign-in/service/sign-in.service';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
-
+import {
+  LucideAngularModule,
+  FileIcon,
+  UserIcon,
+  EditIcon,
+  LogOutIcon,
+  SettingsIcon,
+  CameraIcon,
+  GiftIcon,
+  CalendarHeartIcon,
+  ShieldCheckIcon,
+  KeySquareIcon,
+  SquareCodeIcon,
+} from 'lucide-angular';
 @Component({
   selector: 'app-profile',
   imports: [
@@ -17,6 +30,7 @@ import { AlertComponent } from '../../shared/components/alert/alert.component';
     LoadingSpinnerComponent,
     ButtonComponent,
     AlertComponent,
+    LucideAngularModule,
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css',
@@ -26,6 +40,18 @@ export class ProfileComponent {
   private signInService = inject(SignInService);
   private router = inject(Router);
 
+  // Lucide icons
+  readonly FileIcon = FileIcon;
+  readonly UserIcon = UserIcon;
+  readonly EditIcon = EditIcon;
+  readonly LogOutIcon = LogOutIcon;
+  readonly SettingsIcon = SettingsIcon;
+  readonly CameraIcon = CameraIcon;
+  readonly GiftIcon = GiftIcon;
+  readonly CalendarHeartIcon = CalendarHeartIcon;
+  readonly ShieldCheckIcon = ShieldCheckIcon;
+  readonly KeySquareIcon = KeySquareIcon;
+  readonly SquareCodeIcon = SquareCodeIcon;
   userProfileInfo: UserResponse = {
     id: 0,
     publicId: '',
@@ -133,8 +159,19 @@ export class ProfileComponent {
   }
 
   onLogout(): void {
-    this.signInService.removeTokens();
-    this.router.navigate(['/sign-in']);
+    this.signInService.logout().subscribe({
+      next: (response) => {
+        console.log('Logout successful:', response);
+        // Navigate to sign-in page after successful logout
+        this.router.navigate(['/sign-in']);
+      },
+      error: (error) => {
+        console.error('Logout failed:', error);
+        // Even if API call fails, remove tokens locally and redirect
+        this.signInService.removeTokens();
+        this.router.navigate(['/sign-in']);
+      },
+    });
   }
 
   navigateToAdmin(): void {
