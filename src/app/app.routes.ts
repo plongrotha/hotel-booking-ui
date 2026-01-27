@@ -8,6 +8,7 @@ import { SignUpComponent } from './features/sign-up/sign-up.component';
 import { ProfileComponent } from './features/profile/profile.component';
 import { AdminComponent } from './features/admin/admin.component';
 import { OwnerComponent } from './features/owner/owner.component';
+import { AttractionDetailComponent } from './features/attraction-detail/attraction-detail.component';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,10 @@ export const routes: Routes = [
   {
     path: 'hotels/:id',
     component: HotelDetailComponent,
+  },
+  {
+    path: 'attraction/:id',
+    component: AttractionDetailComponent,
   },
   {
     path: 'bookings',

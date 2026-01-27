@@ -44,6 +44,7 @@ export class HotelComponent {
         this.hotels = res.data?.content || [];
         this.totalElements = res.data?.totalElements || 0;
         this.totalPages = res.data?.totalPages || 0;
+        console.log(this.hotels);
         this.extractUniqueLocations();
         this.isLoading = false;
         console.log('Hotels loaded:', res);

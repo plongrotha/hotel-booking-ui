@@ -1,0 +1,19 @@
+<div class="stat-card">
+  <div class="stat-icon">
+    <ng-container *ngIf="isLucideIcon; else stringIcon">
+      <lucide-angular [img]="icon" [size]="24" [color]="color"></lucide-angular>
+    </ng-container>
+    <ng-template #stringIcon>{{ icon }}</ng-template>
+  </div>
+  <div class="stat-info">
+    <h3>
+      {{ prefix }}
+      <ng-container *ngIf="formatAsNumber; else plainValue">
+        {{ value | number : numberFormat }}
+      </ng-container>
+      <ng-template #plainValue>{{ value }}</ng-template>
+      {{ suffix }}
+    </h3>
+    <p>{{ label }}</p>
+  </div>
+</div>

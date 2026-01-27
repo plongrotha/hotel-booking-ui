@@ -53,6 +53,10 @@ export class AdminService {
     );
   }
 
+  getAllBookings(): Observable<{ data: Booking[] }> {
+    return this.http.get<{ data: Booking[] }>(`${this.apiUrl}/bookings`);
+  }
+
   // Hotel Management
   getAllHotels(): Observable<{ data: Hotel[] }> {
     return this.http.get<{ data: Hotel[] }>(`${this.apiUrl}/hotels`);
@@ -60,11 +64,6 @@ export class AdminService {
 
   deleteHotel(hotelId: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/hotel/${hotelId}`);
-  }
-
-  // Booking Management
-  getAllBookings(): Observable<Booking[]> {
-    return this.http.get<Booking[]>(`${this.apiUrl}/bookings`);
   }
 
   updateBookingStatus(bookingId: number, status: string): Observable<Booking> {

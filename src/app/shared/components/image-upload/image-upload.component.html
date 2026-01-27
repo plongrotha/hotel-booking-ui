@@ -1,0 +1,48 @@
+<div class="form-group form-group-full">
+  <label [for]="inputId">{{ label }}</label>
+
+  <!-- Image Preview -->
+  <div *ngIf="imagePreviewUrl" class="image-preview">
+    <img [src]="imagePreviewUrl" alt="Preview" />
+    <button type="button" class="btn-remove-image" (click)="onClearImage()">
+      ✕
+    </button>
+  </div>
+
+  <!-- Upload Error -->
+  <div *ngIf="uploadError" class="upload-error">
+    {{ uploadError }}
+  </div>
+
+  <!-- Uploading Indicator -->
+  <div *ngIf="isUploading" class="upload-progress">
+    <div class="spinner-small"></div>
+    <span>Uploading image...</span>
+  </div>
+
+  <!-- File Input -->
+  <div class="file-input-wrapper" *ngIf="!isUploading && !imagePreviewUrl">
+    <input
+      [id]="inputId"
+      type="file"
+      accept="image/*"
+      (change)="onFileSelected($event)"
+      class="file-input"
+      #fileInput
+    />
+    <label [for]="inputId" class="file-input-label">
+      <span class="icon">📁</span>
+      Choose an image file (auto-uploads)
+    </label>
+  </div>
+
+  <!-- Image URL (Read-only) -->
+  <input
+    *ngIf="imageFileName"
+    type="text"
+    [value]="imageFileName"
+    class="form-input"
+    readonly
+    placeholder="Image filename will appear here"
+  />
+</div>

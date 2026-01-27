@@ -7,30 +7,36 @@
 
   <!-- Navigation Tabs -->
   <nav class="owner-nav">
-    <button
-      class="nav-btn"
-      [class.active]="activeTab === 'dashboard'"
-      (click)="setActiveTab('dashboard')"
+    <app-button
+      [variant]="activeTab === 'dashboard' ? 'primary' : 'secondary'"
+      size="large"
+      id="dashboard-tab-btn"
+      (clicked)="setActiveTab('dashboard')"
     >
-      <span class="icon">📊</span>
+      <lucide-angular
+        [class]="'mr-1'"
+        [img]="ChartNoAxesCombinedIcon"
+      ></lucide-angular>
       Dashboard
-    </button>
-    <button
-      class="nav-btn"
-      [class.active]="activeTab === 'hotels'"
-      (click)="setActiveTab('hotels')"
+    </app-button>
+    <app-button
+      [variant]="activeTab === 'hotels' ? 'primary' : 'secondary'"
+      size="large"
+      id="hotels-tab-btn"
+      (clicked)="setActiveTab('hotels')"
     >
-      <span class="icon">🏨</span>
-      My Hotels
-    </button>
-    <button
-      class="nav-btn"
-      [class.active]="activeTab === 'bookings'"
-      (click)="setActiveTab('bookings')"
+      <lucide-angular [class]="'mr-1'" [img]="BuildingIcon"></lucide-angular> My
+      Hotels
+    </app-button>
+    <app-button
+      id="bookings-tab-btn"
+      [variant]="activeTab === 'bookings' ? 'primary' : 'secondary'"
+      size="large"
+      (clicked)="setActiveTab('bookings')"
     >
-      <span class="icon">📅</span>
+      <lucide-angular [class]="'mr-1'" [img]="NotepadTextIcon"></lucide-angular>
       Bookings
-    </button>
+    </app-button>
   </nav>
 
   <!-- Error Message -->
@@ -39,42 +45,47 @@
   </div>
 
   <!-- Loading Spinner -->
-  <div class="loading" *ngIf="loading">
-    <div class="spinner"></div>
-    <p>Loading...</p>
-  </div>
+  <app-loading-spinner
+    *ngIf="loading"
+    message="Loading..."
+  ></app-loading-spinner>
 
   <!-- Dashboard Tab -->
   <div class="tab-content" *ngIf="activeTab === 'dashboard' && !loading">
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon">🏨</div>
-        <div class="stat-info">
-          <h3>{{ stats.totalHotels }}</h3>
-          <p>My Hotels</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">📅</div>
-        <div class="stat-info">
-          <h3>{{ stats.totalBookings }}</h3>
-          <p>Total Bookings</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">✅</div>
-        <div class="stat-info">
-          <h3>{{ stats.activeBookings }}</h3>
-          <p>Active Bookings</p>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">💰</div>
-        <div class="stat-info">
-          <h3>${{ stats.totalRevenue | number : "1.2-2" }}</h3>
-          <p>Total Revenue</p>
-        </div>
-      </div>
+      <app-stat-card
+        [icon]="BuildingIcon"
+        [value]="stats.totalHotels"
+        label="My Hotels"
+        [color]="'white'"
+        [isLucideIcon]="true"
+      ></app-stat-card>
+
+      <app-stat-card
+        [icon]="NotepadTextIcon"
+        [value]="stats.totalBookings"
+        label="Total Bookings"
+        [color]="'white'"
+        [isLucideIcon]="true"
+      ></app-stat-card>
+
+      <app-stat-card
+        [icon]="ClipboardCheckIcon"
+        [value]="stats.activeBookings"
+        label="Active Bookings"
+        [color]="'white'"
+        [isLucideIcon]="true"
+      ></app-stat-card>
+
+      <app-stat-card
+        [icon]="CircleDollarSignIcon"
+        [value]="stats.totalRevenue"
+        label="Total Revenue"
+        prefix="$"
+        [color]="'white'"
+        [formatAsNumber]="true"
+        [isLucideIcon]="true"
+      ></app-stat-card>
     </div>
   </div>
 
@@ -83,18 +94,19 @@
     <div class="content-header">
       <h2>My Hotels</h2>
       <div class="header-actions">
-        <div class="search-box">
-          <input
-            type="text"
-            placeholder="Search hotels..."
-            [(ngModel)]="hotelSearchTerm"
-            (input)="searchHotels()"
-          />
-        </div>
-        <button class="btn-add" (click)="openCreateHotelDialog()">
-          <span class="icon">+</span>
+        <app-search-box
+          placeholder="Search hotels..."
+          [(value)]="hotelSearchTerm"
+          (search)="searchHotels()"
+        ></app-search-box>
+        <app-button
+          id="add-new-hotel-btn"
+          variant="success"
+          icon="+"
+          (clicked)="openCreateHotelDialog()"
+        >
           Add New Hotel
-        </button>
+        </app-button>
       </div>
     </div>
 
@@ -133,18 +145,38 @@
             <td>{{ hotel.createdAt | date : "short" }}</td>
             <td>
               <div class="action-buttons">
-                <button class="btn-view" (click)="openViewRoomsDialog(hotel)">
+                <app-button
+                  id="view-rooms-btn"
+                  variant="view"
+                  size="small"
+                  (clicked)="openViewRoomsDialog(hotel)"
+                >
                   View Rooms
-                </button>
-                <button class="btn-edit" (click)="openAddRoomDialog(hotel)">
+                </app-button>
+                <app-button
+                  id="add-rooms-btn"
+                  variant="warning"
+                  size="small"
+                  (clicked)="openAddRoomDialog(hotel)"
+                >
                   Add Room
-                </button>
-                <button class="btn-edit" (click)="openEditHotelDialog(hotel)">
+                </app-button>
+                <app-button
+                  id="edit-hotel-btn"
+                  variant="secondary"
+                  size="small"
+                  (clicked)="openEditHotelDialog(hotel)"
+                >
                   Edit
-                </button>
-                <button class="btn-delete" (click)="deleteHotel(hotel.hotelId)">
+                </app-button>
+                <app-button
+                  id="delete-hotel-btn"
+                  variant="danger"
+                  size="small"
+                  (clicked)="deleteHotel(hotel.hotelId)"
+                >
                   Delete
-                </button>
+                </app-button>
               </div>
             </td>
           </tr>
@@ -160,58 +192,72 @@
   <div class="tab-content" *ngIf="activeTab === 'bookings' && !loading">
     <div class="content-header">
       <h2>Hotel Bookings</h2>
-      <div class="search-box">
-        <input
-          type="text"
-          placeholder="Search bookings..."
-          [(ngModel)]="bookingSearchTerm"
-          (input)="searchBookings()"
-        />
-      </div>
+      <app-search-box
+        placeholder="Search bookings..."
+        [(value)]="bookingSearchTerm"
+        (search)="searchBookings()"
+      ></app-search-box>
+    </div>
+
+    <!-- Booking Filters -->
+    <div class="booking-filters">
+      <app-button
+        id="filter-all-bookings-btn"
+        [variant]="bookingFilter === 'all' ? 'primary' : 'secondary'"
+        size="small"
+        (clicked)="setBookingFilter('all')"
+      >
+        All Bookings
+      </app-button>
+      <app-button
+        id="filter-checkin-today-btn"
+        [variant]="bookingFilter === 'checkin-today' ? 'primary' : 'secondary'"
+        size="small"
+        (clicked)="setBookingFilter('checkin-today')"
+      >
+        Check-in Today
+      </app-button>
+      <app-button
+        id="filter-checkout-today-btn"
+        [variant]="bookingFilter === 'checkout-today' ? 'primary' : 'secondary'"
+        size="small"
+        (clicked)="setBookingFilter('checkout-today')"
+      >
+        Check-out Today
+      </app-button>
     </div>
 
     <div class="table-container">
       <table class="data-table">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>Hotel</th>
-            <th>User</th>
+            <th>Booking ID</th>
+            <th>Client Name</th>
+            <th>User ID</th>
+            <th>Hotel ID</th>
+            <th>Room ID</th>
             <th>Check In</th>
             <th>Check Out</th>
-            <th>Price</th>
-            <th>Status</th>
+            <th>Total Price</th>
+            <th>Booking Date</th>
+            <th>Updated At</th>
           </tr>
         </thead>
         <tbody>
           <tr *ngFor="let booking of filteredBookings">
             <td>{{ booking.bookingId }}</td>
-            <td>{{ booking.hotelName || "N/A" }}</td>
-            <td>{{ booking.userName || "User #" + booking.userId }}</td>
+            <td>{{ booking.clientName || "N/A" }}</td>
+            <td>{{ booking.userId }}</td>
+            <td>{{ booking.hotelId }}</td>
+            <td>{{ booking.roomId }}</td>
             <td>{{ booking.checkInDate | date : "short" }}</td>
             <td>{{ booking.checkOutDate | date : "short" }}</td>
             <td>${{ booking.totalPrice | number : "1.2-2" }}</td>
-            <td>
-              <select
-                class="status-select"
-                [value]="booking.status"
-                [ngClass]="getStatusClass(booking.status)"
-                (change)="
-                  updateBookingStatus(
-                    booking.bookingId,
-                    $any($event.target).value
-                  )
-                "
-              >
-                <option value="PENDING">Pending</option>
-                <option value="CONFIRMED">Confirmed</option>
-                <option value="CANCELLED">Cancelled</option>
-                <option value="COMPLETED">Completed</option>
-              </select>
-            </td>
+            <td>{{ booking.bookingAt | date : "short" }}</td>
+            <td>{{ booking.updatedAt | date : "short" }}</td>
           </tr>
           <tr *ngIf="filteredBookings.length === 0">
-            <td colspan="7" class="no-data">No bookings found</td>
+            <td colspan="10" class="no-data">No bookings found</td>
           </tr>
         </tbody>
       </table>
@@ -220,6 +266,7 @@
 
   <!-- Create Hotel Dialog Modal -->
   <div
+    id="create-hotel-modal"
     *ngIf="isCreateHotelDialogOpen"
     class="modal-overlay no-scrollbar"
     (click)="closeCreateHotelDialog()"
@@ -234,28 +281,34 @@
             <p>Add a new hotel to your portfolio</p>
           </div>
         </div>
-        <button class="btn-close" (click)="closeCreateHotelDialog()">✕</button>
+        <app-button
+          variant="secondary"
+          size="small"
+          (clicked)="closeCreateHotelDialog()"
+        >
+          ✕
+        </app-button>
       </div>
 
       <!-- Dialog Body -->
-      <form (ngSubmit)="onCreateHotel()" class="modal-body">
-        <!-- Success Message -->
-        <div *ngIf="createHotelSuccess" class="alert alert-success">
-          <span class="icon">✓</span>
-          <div>
-            <h4>Success!</h4>
-            <p>Hotel has been created successfully.</p>
-          </div>
-        </div>
+      <form
+        id="create-hotel-form"
+        (ngSubmit)="onCreateHotel()"
+        class="modal-body"
+      >
+        <app-alert
+          type="success"
+          title="Success!"
+          message="Hotel has been created successfully."
+          [show]="createHotelSuccess"
+        ></app-alert>
 
-        <!-- Error Message -->
-        <div *ngIf="createHotelError" class="alert alert-error">
-          <span class="icon">⚠</span>
-          <div>
-            <h4>Error</h4>
-            <p>{{ createHotelError }}</p>
-          </div>
-        </div>
+        <app-alert
+          type="error"
+          title="Error"
+          [message]="createHotelError"
+          [show]="!!createHotelError"
+        ></app-alert>
 
         <div class="form-grid">
           <!-- Hotel Name -->
@@ -290,78 +343,55 @@
             />
           </div>
 
-          <!-- Hotel Image Upload -->
+          <!-- Google Maps URL -->
           <div class="form-group form-group-full">
-            <label for="hotelImageUpload">Hotel Image</label>
-
-            <!-- Image Preview -->
-            <div *ngIf="imagePreviewUrl" class="image-preview">
-              <img [src]="imagePreviewUrl" alt="Preview" />
-              <button
-                type="button"
-                class="btn-remove-image"
-                (click)="clearImageSelection()"
-              >
-                ✕
-              </button>
-            </div>
-
-            <!-- Upload Error -->
-            <div *ngIf="uploadImageError" class="upload-error">
-              {{ uploadImageError }}
-            </div>
-
-            <!-- Uploading Indicator -->
-            <div *ngIf="isUploadingImage" class="upload-progress">
-              <div class="spinner-small"></div>
-              <span>Uploading image...</span>
-            </div>
-
-            <!-- File Input -->
-            <div
-              class="file-input-wrapper"
-              *ngIf="!isUploadingImage && !imagePreviewUrl"
-            >
-              <input
-                id="hotelImageUpload"
-                type="file"
-                accept="image/*"
-                (change)="onImageFileSelected($event)"
-                class="file-input"
-                #fileInput
-              />
-              <label for="hotelImageUpload" class="file-input-label">
-                <span class="icon">📁</span>
-                Choose an image file (auto-uploads)
-              </label>
-            </div>
-
-            <!-- Image URL (Read-only) -->
+            <label for="googleMapUrl">Google Maps Embed URL (Optional)</label>
             <input
-              *ngIf="newHotelData.hotelImage"
-              type="text"
-              [value]="newHotelData.hotelImage"
+              id="googleMapUrl"
+              type="url"
+              [(ngModel)]="newHotelData.googleMapUrl"
+              name="googleMapUrl"
+              placeholder="Enter Google Maps embed URL"
               class="form-input"
-              readonly
-              placeholder="Image filename will appear here"
             />
+            <p class="form-hint">
+              Paste the Google Maps embed URL (iframe src) to show the location
+              on the hotel detail page.
+            </p>
           </div>
+
+          <!-- Hotel Image Upload -->
+          <app-image-upload
+            label="Hotel Image"
+            inputId="hotelImageUpload"
+            [imagePreviewUrl]="imagePreviewUrl"
+            [imageFileName]="newHotelData.hotelImage || null"
+            [isUploading]="isUploadingImage"
+            [uploadError]="uploadImageError"
+            (fileSelected)="onImageFileSelected($event)"
+            (clearImage)="clearImageSelection()"
+          ></app-image-upload>
         </div>
 
         <!-- Dialog Footer -->
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn-cancel"
-            (click)="closeCreateHotelDialog()"
+          <app-button
+            id="cancel-create-hotel-btn"
+            variant="secondary"
             [disabled]="isCreatingHotel"
+            (clicked)="closeCreateHotelDialog()"
           >
             Cancel
-          </button>
-          <button type="submit" class="btn-submit" [disabled]="isCreatingHotel">
-            <span *ngIf="isCreatingHotel" class="spinner-small"></span>
-            <span>{{ isCreatingHotel ? "Creating..." : "Create Hotel" }}</span>
-          </button>
+          </app-button>
+          <app-button
+            id="submit-create-hotel-btn"
+            type="submit"
+            variant="primary"
+            [disabled]="isCreatingHotel"
+            [loading]="isCreatingHotel"
+          >
+            {{ isCreatingHotel ? "Creating..." : "Create Hotel" }}
+          </app-button>
         </div>
       </form>
     </div>
@@ -369,6 +399,7 @@
 
   <!-- Edit Hotel Dialog Modal -->
   <div
+    id="edit-hotel-modal"
     *ngIf="isEditHotelDialogOpen"
     class="modal-overlay"
     (click)="closeEditHotelDialog()"
@@ -383,28 +414,34 @@
             <p>Update hotel information</p>
           </div>
         </div>
-        <button class="btn-close" (click)="closeEditHotelDialog()">✕</button>
+        <app-button
+          variant="secondary"
+          size="small"
+          (clicked)="closeEditHotelDialog()"
+        >
+          ✕
+        </app-button>
       </div>
 
       <!-- Dialog Body -->
-      <form (ngSubmit)="onUpdateHotel()" class="modal-body">
-        <!-- Success Message -->
-        <div *ngIf="updateHotelSuccess" class="alert alert-success">
-          <span class="icon">✓</span>
-          <div>
-            <h4>Success!</h4>
-            <p>Hotel has been updated successfully.</p>
-          </div>
-        </div>
+      <form
+        id="edit-hotel-form"
+        (ngSubmit)="onUpdateHotel()"
+        class="modal-body"
+      >
+        <app-alert
+          type="success"
+          title="Success!"
+          message="Hotel has been updated successfully."
+          [show]="updateHotelSuccess"
+        ></app-alert>
 
-        <!-- Error Message -->
-        <div *ngIf="updateHotelError" class="alert alert-error">
-          <span class="icon">⚠</span>
-          <div>
-            <h4>Error</h4>
-            <p>{{ updateHotelError }}</p>
-          </div>
-        </div>
+        <app-alert
+          type="error"
+          title="Error"
+          [message]="updateHotelError"
+          [show]="!!updateHotelError"
+        ></app-alert>
 
         <div class="form-grid">
           <!-- Hotel Name -->
@@ -439,78 +476,57 @@
             />
           </div>
 
-          <!-- Hotel Image Upload -->
+          <!-- Google Maps URL -->
           <div class="form-group form-group-full">
-            <label for="editHotelImageUpload">Hotel Image</label>
-
-            <!-- Current Image Preview -->
-            <div *ngIf="editImagePreviewUrl" class="image-preview">
-              <img [src]="editImagePreviewUrl" alt="Preview" />
-              <button
-                type="button"
-                class="btn-remove-image"
-                (click)="clearEditImageSelection()"
-              >
-                ✕
-              </button>
-            </div>
-
-            <!-- Upload Error -->
-            <div *ngIf="uploadImageError" class="upload-error">
-              {{ uploadImageError }}
-            </div>
-
-            <!-- Uploading Indicator -->
-            <div *ngIf="isUploadingImage" class="upload-progress">
-              <div class="spinner-small"></div>
-              <span>Uploading image...</span>
-            </div>
-
-            <!-- File Input -->
-            <div
-              class="file-input-wrapper"
-              *ngIf="!isUploadingImage && !editImagePreviewUrl"
+            <label for="editGoogleMapUrl"
+              >Google Maps Embed URL (Optional)</label
             >
-              <input
-                id="editHotelImageUpload"
-                type="file"
-                accept="image/*"
-                (change)="onEditImageFileSelected($event)"
-                class="file-input"
-                #editFileInput
-              />
-              <label for="editHotelImageUpload" class="file-input-label">
-                <span class="icon">📁</span>
-                Choose an image file (auto-uploads)
-              </label>
-            </div>
-
-            <!-- Image URL (Read-only) -->
             <input
-              *ngIf="editHotelData.hotelImage"
-              type="text"
-              [value]="editHotelData.hotelImage"
+              id="editGoogleMapUrl"
+              type="url"
+              [(ngModel)]="editHotelData.googleMapUrl"
+              name="editGoogleMapUrl"
+              placeholder="Enter Google Maps embed URL"
               class="form-input"
-              readonly
-              placeholder="Image filename will appear here"
             />
+            <p class="form-hint">
+              Paste the Google Maps embed URL (iframe src) to show the location
+              on the hotel detail page.
+            </p>
           </div>
+
+          <!-- Hotel Image Upload -->
+          <app-image-upload
+            label="Hotel Image"
+            inputId="editHotelImageUpload"
+            [imagePreviewUrl]="editImagePreviewUrl"
+            [imageFileName]="editHotelData.hotelImage || null"
+            [isUploading]="isUploadingImage"
+            [uploadError]="uploadImageError"
+            (fileSelected)="onEditImageFileSelected($event)"
+            (clearImage)="clearEditImageSelection()"
+          ></app-image-upload>
         </div>
 
         <!-- Dialog Footer -->
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn-cancel"
-            (click)="closeEditHotelDialog()"
+          <app-button
+            id="cancel-edit-hotel-btn"
+            variant="secondary"
             [disabled]="isUpdatingHotel"
+            (clicked)="closeEditHotelDialog()"
           >
             Cancel
-          </button>
-          <button type="submit" class="btn-submit" [disabled]="isUpdatingHotel">
-            <span *ngIf="isUpdatingHotel" class="spinner-small"></span>
-            <span>{{ isUpdatingHotel ? "Updating..." : "Update Hotel" }}</span>
-          </button>
+          </app-button>
+          <app-button
+            id="submit-edit-hotel-btn"
+            type="submit"
+            variant="primary"
+            [disabled]="isUpdatingHotel"
+            [loading]="isUpdatingHotel"
+          >
+            {{ isUpdatingHotel ? "Updating..." : "Update Hotel" }}
+          </app-button>
         </div>
       </form>
     </div>
@@ -518,6 +534,7 @@
 
   <!-- Add Room Dialog Modal -->
   <div
+    id="add-room-modal"
     *ngIf="isAddRoomDialogOpen"
     class="modal-overlay"
     (click)="closeAddRoomDialog()"
@@ -532,32 +549,35 @@
             <p>Add a room to {{ selectedHotelForRoom?.hotelName }}</p>
           </div>
         </div>
-        <button class="btn-close" (click)="closeAddRoomDialog()">✕</button>
+        <app-button
+          variant="secondary"
+          size="small"
+          (clicked)="closeAddRoomDialog()"
+        >
+          ✕
+        </app-button>
       </div>
 
       <!-- Dialog Body -->
       <form
+        id="add-room-form"
         [formGroup]="addRoomForm"
         (ngSubmit)="onAddRoom()"
         class="modal-body"
       >
-        <!-- Success Message -->
-        <div *ngIf="addRoomSuccess" class="alert alert-success">
-          <span class="icon">✓</span>
-          <div>
-            <h4>Success!</h4>
-            <p>Room has been added successfully.</p>
-          </div>
-        </div>
+        <app-alert
+          type="success"
+          title="Success!"
+          message="Room has been added successfully."
+          [show]="addRoomSuccess"
+        ></app-alert>
 
-        <!-- Error Message -->
-        <div *ngIf="addRoomError" class="alert alert-error">
-          <span class="icon">⚠</span>
-          <div>
-            <h4>Error</h4>
-            <p>{{ addRoomError }}</p>
-          </div>
-        </div>
+        <app-alert
+          type="error"
+          title="Error"
+          [message]="addRoomError"
+          [show]="!!addRoomError"
+        ></app-alert>
 
         <div class="form-grid">
           <!-- Room Number -->
@@ -640,22 +660,23 @@
 
         <!-- Dialog Footer -->
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn-cancel"
-            (click)="closeAddRoomDialog()"
+          <app-button
+            id="cancel-add-room-btn"
+            variant="secondary"
             [disabled]="isAddingRoom"
+            (clicked)="closeAddRoomDialog()"
           >
             Cancel
-          </button>
-          <button
+          </app-button>
+          <app-button
+            id="submit-add-room-btn"
             type="submit"
-            class="btn-submit"
+            variant="primary"
             [disabled]="isAddingRoom || addRoomForm.invalid"
+            [loading]="isAddingRoom"
           >
-            <span *ngIf="isAddingRoom" class="spinner-small"></span>
-            <span>{{ isAddingRoom ? "Adding..." : "Add Room" }}</span>
-          </button>
+            {{ isAddingRoom ? "Adding..." : "Add Room" }}
+          </app-button>
         </div>
       </form>
     </div>
@@ -663,8 +684,9 @@
 
   <!-- View Rooms Dialog Modal -->
   <div
+    id="view-rooms-modal"
     *ngIf="isViewRoomsDialogOpen"
-    class="modal-overlay"
+    class="modal-overlay no-scrollbar"
     (click)="closeViewRoomsDialog()"
   >
     <div class="modal-content modal-large" (click)="$event.stopPropagation()">
@@ -677,29 +699,36 @@
             <p>{{ selectedHotelForView?.location }}</p>
           </div>
         </div>
-        <button class="btn-close" (click)="closeViewRoomsDialog()">✕</button>
+        <app-button
+          variant="secondary"
+          size="small"
+          (clicked)="closeViewRoomsDialog()"
+        >
+          ✕
+        </app-button>
       </div>
 
       <!-- Dialog Body -->
-      <div class="modal-body">
-        <!-- Error Message -->
-        <div *ngIf="viewRoomsError" class="alert alert-error">
-          <span class="icon">⚠</span>
-          <div>
-            <h4>Error</h4>
-            <p>{{ viewRoomsError }}</p>
-          </div>
-        </div>
+      <div class="modal-body no-scrollbar">
+        <app-alert
+          type="error"
+          title="Error"
+          [message]="viewRoomsError"
+          [show]="!!viewRoomsError"
+        ></app-alert>
 
-        <!-- Loading Spinner -->
-        <div *ngIf="isLoadingRooms" class="loading">
-          <div class="spinner"></div>
-          <p>Loading rooms...</p>
-        </div>
+        <app-loading-spinner
+          *ngIf="isLoadingRooms"
+          message="Loading rooms..."
+        ></app-loading-spinner>
 
         <!-- Rooms Table -->
         <div *ngIf="!isLoadingRooms && !viewRoomsError" class="table-container">
-          <table class="data-table" *ngIf="hotelRooms.length > 0">
+          <table
+            id="rooms-table"
+            class="data-table"
+            *ngIf="hotelRooms.length > 0"
+          >
             <thead>
               <tr>
                 <th>Room ID</th>
@@ -708,6 +737,7 @@
                 <th>Price/Night</th>
                 <th>Status</th>
                 <th>Created</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -727,6 +757,18 @@
                   </span>
                 </td>
                 <td>{{ room.createdAt | date : "short" }}</td>
+                <td>
+                  <div class="action-buttons">
+                    <app-button
+                      id="edit-rooms-btn"
+                      variant="secondary"
+                      size="small"
+                      (clicked)="openEditRoomDialog(room)"
+                    >
+                      Edit
+                    </app-button>
+                  </div>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -736,24 +778,193 @@
             <span class="icon">🏨</span>
             <h3>No rooms available</h3>
             <p>This hotel doesn't have any rooms yet.</p>
-            <button class="btn-add" (click)="openAddRoomFromView()">
-              <span class="icon">+</span>
+            <app-button
+              id="add-first-room-btn"
+              variant="success"
+              icon="+"
+              (clicked)="openAddRoomFromView()"
+            >
               Add First Room
-            </button>
+            </app-button>
           </div>
         </div>
 
         <!-- Dialog Footer -->
         <div class="modal-footer" *ngIf="!isLoadingRooms">
-          <button
-            type="button"
-            class="btn-cancel"
-            (click)="closeViewRoomsDialog()"
+          <app-button
+            id="add-room-from-view-btn"
+            *ngIf="hotelRooms.length != 0"
+            variant="primary"
+            icon="+"
+            (clicked)="openAddRoomFromView()"
+          >
+            Add Room
+          </app-button>
+          <app-button
+            id="close-view-rooms-btn"
+            variant="secondary"
+            (clicked)="closeViewRoomsDialog()"
           >
             Close
-          </button>
+          </app-button>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Edit Room Dialog Modal -->
+  <div
+    id="edit-room-modal"
+    *ngIf="isEditRoomDialogOpen"
+    class="modal-overlay"
+    (click)="closeEditRoomDialog()"
+  >
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <!-- Dialog Header -->
+      <div class="modal-header">
+        <div class="modal-title">
+          <span class="icon">✏️</span>
+          <div>
+            <h2>Edit Room</h2>
+            <p>Update room information</p>
+          </div>
+        </div>
+        <app-button
+          id="edit-room-btn"
+          variant="secondary"
+          size="small"
+          (clicked)="closeEditRoomDialog()"
+        >
+          ✕
+        </app-button>
+      </div>
+
+      <!-- Dialog Body -->
+      <form
+        id="edit-room-form"
+        [formGroup]="editRoomForm"
+        (ngSubmit)="onUpdateRoom()"
+        class="modal-body"
+      >
+        <app-alert
+          type="success"
+          title="Success!"
+          message="Room has been updated successfully."
+          [show]="updateRoomSuccess"
+        ></app-alert>
+
+        <app-alert
+          type="error"
+          title="Error"
+          [message]="updateRoomError"
+          [show]="!!updateRoomError"
+        ></app-alert>
+
+        <div class="form-grid">
+          <!-- Room Number -->
+          <div class="form-group">
+            <label for="editRoomNumber"
+              >Room Number <span class="required">*</span></label
+            >
+            <input
+              id="editRoomNumber"
+              type="number"
+              formControlName="roomNumber"
+              placeholder="Enter room number"
+              class="form-input"
+              [disabled]="isDisabledRoomNumber"
+              [ngClass]="{
+                'input-error':
+                  editRoomNumber?.invalid && editRoomNumber?.touched
+              }"
+            />
+            <div
+              *ngIf="editRoomNumber?.invalid && editRoomNumber?.touched"
+              class="error-text"
+            >
+              <p *ngIf="editRoomNumber?.errors?.['required']">
+                Room number is required
+              </p>
+              <p *ngIf="editRoomNumber?.errors?.['min']">
+                Room number must be at least 1
+              </p>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="form-group">
+            <label for="editPrice"
+              >Price per Night <span class="required">*</span></label
+            >
+            <input
+              id="editPrice"
+              type="number"
+              formControlName="price"
+              placeholder="Enter price"
+              step="0.01"
+              class="form-input"
+              [ngClass]="{
+                'input-error': editPrice?.invalid && editPrice?.touched
+              }"
+            />
+            <div
+              *ngIf="editPrice?.invalid && editPrice?.touched"
+              class="error-text"
+            >
+              <p *ngIf="editPrice?.errors?.['required']">Price is required</p>
+              <p *ngIf="editPrice?.errors?.['min']">Price must be at least 0</p>
+            </div>
+          </div>
+
+          <!-- Room Type -->
+          <div class="form-group form-group-full">
+            <label for="editRoomTypeSelect"
+              >Room Type <span class="required">*</span></label
+            >
+            <select
+              id="editRoomTypeSelect"
+              formControlName="roomType"
+              class="form-input"
+              [ngClass]="{
+                'input-error': editRoomType?.invalid && editRoomType?.touched
+              }"
+            >
+              <option *ngFor="let type of roomTypes" [value]="type">
+                {{ type }}
+              </option>
+            </select>
+            <div
+              *ngIf="editRoomType?.invalid && editRoomType?.touched"
+              class="error-text"
+            >
+              <p *ngIf="editRoomType?.errors?.['required']">
+                Room type is required
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dialog Footer -->
+        <div class="modal-footer">
+          <app-button
+            id="cancel-edit-room-btn"
+            variant="secondary"
+            [disabled]="isUpdatingRoom"
+            (clicked)="closeEditRoomDialog()"
+          >
+            Cancel
+          </app-button>
+          <app-button
+            id="update-room-btn"
+            type="submit"
+            variant="primary"
+            [disabled]="isUpdatingRoom || editRoomForm.invalid"
+            [loading]="isUpdatingRoom"
+          >
+            {{ isUpdatingRoom ? "Updating..." : "Update Room" }}
+          </app-button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

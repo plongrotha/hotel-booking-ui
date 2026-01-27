@@ -1,59 +1,74 @@
-# HotelBookingUi
+# Hotel Booking UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.18.
+A modern, responsive hotel booking web application built with Angular. This project allows users to search for hotels, view details, book rooms, and manage their bookings. It also features authentication, user profiles, and an admin panel for hotel management.
 
-## Development server
+## Features
 
-To start a local development server, run:
+- **Hotel Search & Booking:**
+  - Search hotels by destination, date, and guests
+  - View hotel details, rooms, and availability
+  - Book rooms and manage your reservations
+- **User Authentication:**
+  - Sign up and sign in with secure authentication
+  - User roles (guest, owner, admin)
+- **Profile Management:**
+  - View and update user profile
+  - View booking history
+- **Admin & Owner Panel:**
+  - Manage hotels, rooms, and bookings
+  - View statistics and reports
+- **Attraction Explorer:**
+  - Discover local attractions and details
+- **Responsive Design:**
+  - Mobile-friendly and accessible UI
+- **Modern Stack:**
+  - Angular 19, Tailwind CSS, FontAwesome, RxJS
+  - E2E testing with Cypress
 
-```bash
-ng serve
-```
+## Project Structure
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- `src/app/features/` — Feature modules (home, hotel, booking, profile, admin, etc.)
+- `src/app/core/` — Core services, models, and interceptors
+- `src/app/shared/` — Shared components (navbar, footer, buttons, etc.)
+- `public/` — Static assets
+- `cypress/` — E2E tests and configuration
 
-## Code scaffolding
+## Getting Started
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Prerequisites
 
-```bash
-ng generate component component-name
-```
+- Node.js (v18+ recommended)
+- Angular CLI (`npm install -g @angular/cli`)
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+### Installation
 
 ```bash
-ng e2e
+npm install
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Running the Application
 
-## Additional Resources
+```bash
+npm start
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+The app will be available at [http://localhost:4200](http://localhost:4200).
+
+### Running Tests
+
+- **Unit tests:**
+  ```bash
+  npm test
+  ```
+- **E2E tests (Cypress):**
+  ```bash
+  npx cypress open
+  ```
+
+## Contributing
+
+Contributions are welcome! Please open issues or submit pull requests for improvements and bug fixes.
+
+## License
+
+This project is licensed under the MIT License.

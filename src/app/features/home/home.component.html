@@ -12,9 +12,10 @@
       <div
         class="bg-white rounded-lg shadow-lg border border-gray-200 p-6 max-w-2xl mx-auto"
       >
-        <form (ngSubmit)="onSearch()" class="space-y-4">
+        <form id="search-form" (ngSubmit)="onSearch()" class="space-y-4">
           <div>
             <input
+              id="destination-input"
               type="text"
               [(ngModel)]="searchData.destination"
               name="destination"
@@ -25,12 +26,14 @@
 
           <div class="grid grid-cols-2 gap-4">
             <input
+              id="checkin-date-input"
               type="date"
               [(ngModel)]="searchData.checkIn"
               name="checkIn"
               class="w-full px-4 py-3 border border-gray-300 rounded-lg text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
             <input
+              id="checkout-date-input"
               type="date"
               [(ngModel)]="searchData.checkOut"
               name="checkOut"
@@ -39,6 +42,7 @@
           </div>
 
           <button
+            id="search-hotels-btn"
             type="submit"
             class="w-full bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-lg"
           >
@@ -58,6 +62,7 @@
 
       <!-- Tourist Attractions Grid -->
       <div
+        id="attractions-grid"
         class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
       >
         <div
@@ -130,7 +135,9 @@
                 {{ attraction.visitors }}
               </span>
               <button
+                id="learn-more-btn"
                 class="text-blue-600 hover:text-blue-700 text-sm font-semibold"
+                (click)="navigateToAttractionDetail(attraction.id)"
               >
                 Learn More →
               </button>
